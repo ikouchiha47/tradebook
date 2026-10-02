@@ -22,6 +22,20 @@ Rules for every mutator:
   flags it, the alternative is a tick-indexed array ladder (index = price, sorted by
   construction, O(1) everything) — deferred to the P1.5 bench, needs a bounded price range.
 
+## Counters — who bumps what (and who must NOT)
+Ownership is exclusive. A counter describes a *problem*, so only the path that
+detects that problem touches it.
+
+| counter | bumped by | must NOT be bumped by |
+|---------|-----------|-----------------------|
+| `unknown_ref` | `reduce`/`remove`/`replace` when the ref is absent | `add`, `best`, `depth` |
+| `clamped` | `reduce`/`remove` when requested qty > resting qty | `add` |
+| `crossed` | any mutator, after `refresh()`, if `bid_px >= ask_px` and both > 0 | reads |
+
+A clean `add` bumps **none** of them. Any helper that increments counters outside
+these paths is wrong (e.g. an `onAdd()` that bumps all three inflates the telemetry
+into lies). Keep counter bumps inline at the exact detection site.
+
 ## bool add(AddOrder& o) — file one birth (A/F)
 Returns true if the order was filed; false if `o.side` is not `'B'` or `'S'`.
 
