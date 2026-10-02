@@ -17,6 +17,21 @@ All multi-byte numbers big-endian. Prices are uint32 ÷ 10,000 → int64 ticks. 
 - `mpid` (4B text, F only): attributed firm id. T2: accept + ignore.
 - `event code` (1B char, S): O=Start, S=Start of System Hours, Q=Market Hours, M=End, E=Halted, C=Closed.
 
+## Field values (enumerations)
+| field | byte value | meaning |
+|-------|-----------|---------|
+| `side` | `'B'` | Buy — rests on the **bid** side (book `bids` map) |
+| `side` | `'S'` | Sell — rests on the **ask** side (book `asks` map) |
+| `printable` (C) | `'Y'` | fill published to the public tape |
+| `printable` (C) | `'N'` | hidden fill, kept off the public tape |
+| event code (S) | `O` | Start of Messages (day open) |
+| event code (S) | `S` | Start of System Hours |
+| event code (S) | `Q` | Start of Market Hours |
+| event code (S) | `M` | End of Market Hours |
+| event code (S) | `E` | End of System Hours |
+| event code (S) | `C` | End of Messages (day close) |
+| trading state (H) | `H`/`P`/`Q`/`T` | Halted / Paused / Quotation-only / Trading |
+
 ## 11B common header (every message, offsets 0..10)
 | Off | Len | Field |
 |-----|-----|-------|
@@ -39,3 +54,32 @@ All multi-byte numbers big-endian. Prices are uint32 ÷ 10,000 → int64 ticks. 
 
 ## T2 scope
 Parse R/A/F fully (verify `len` == 39/36/40, else false). E/C/X/D/U layouts above are for T3; P/Q/B/I/N count-only.
+
+## Full letter inventory (sizes observed in 07302019 unless marked *)
+Book-building (parsed, layouts above):
+`A`36 `F`40 `E`31 `C`36 `X`23 `D`19 `U`35
+
+Reference / state (count-only; book untouched):
+- `S` 12 System event — `[11]` event code (O/S/Q/M/E/C)
+- `R` 39 Stock directory — feed the locate→symbol map
+- `H` 25 Trading action — `[11]` state char (H halted / P paused / Q quot-only / T trading)
+- `Y` 20 Reg SHO — `[11]` short-sale restriction action
+- `L` 26 MPID position — per-firm quoting state (pairs with F) *[large morning block]*
+- `V` 35 MWCB decline levels — market-wide circuit breaker prices
+- `W` 12* MWCB status — `[11]` breached level
+- `K` 28* IPO quoting period update
+- `J` 35 LULD auction collar
+- `h` 21* Operational halt
+- `O` 28* Direct listing w/ capital raise
+
+Tape / imbalance (count-only, NEVER touch book):
+- `P` 44 Trade (non-cross) — off-book print
+- `Q` 40 Cross trade — opening/closing cross print
+- `B` 19* Broken trade — refs a `match` number, not an order (back-office undo)
+- `I` 50 NOII — net order imbalance indicator (every 5s)
+- `N` 20 RPII — retail price improvement indicator
+
+*`B K N O W h` not observed in the first 200M messages of this capture; sizes are
+from the ITCH 5.0 spec. `C I Q V J` sizes confirmed from the file.
+Rule: unknown letters are counted (`hist`) and skipped — never guessed at.
+
