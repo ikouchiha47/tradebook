@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <map>
 #include <unordered_map>
+#include <vector>
 
 // The Book turns your parsed structs into answers. Five jobs, nothing else:
 // 1. add(AddOrder) — file order by ref, add qty to its price level. (A/F land here.)
@@ -26,23 +27,35 @@ struct Level {
   uint32_t count = 0;
 };
 
+struct LevelRow {
+  int64_t price = 0;
+  uint32_t total = 0;
+  uint32_t count = 0;
+};
+
+struct Depth{
+  std::vector<LevelRow> bids, asks;
+};
+
 struct TopOfBook {
   int64_t bid_px = 0, ask_px = 0;
   uint32_t bid_sz = 0, ask_sz = 0;
 };
 
 struct Counters {
-  uint64_t uknown_ref = 0;
+  uint64_t unknown_ref = 0;
   uint64_t clamped = 0;
   uint64_t crossed = 0;
 };
 
-struct Book {
+struct NasdqBook {
   std::unordered_map<uint64_t, Order> orders;  // ref → live order (side/price/qty for cancels)
   std::map<int64_t, Level> bids;               // buy-side rows, price → {total, count}
   std::map<int64_t, Level> asks;               // sell-side rows, same
-  TopOfBook cached;                            // best bid/ask, re-stamped per apply (best() is O(1))
-  Counters stats;                              // unknown_ref, clamped, crossed — the REQ-P1-040..042 armor
+  TopOfBook cached{};                            // best bid/ask, re-stamped per apply (best() is O(1))
+  Counters stats{};                              // unknown_ref, clamped, crossed — the REQ-P1-040..042 armor
+
+  NasdqBook() = default;
 };
 
 class NasdaqBookParser {
@@ -50,12 +63,22 @@ class NasdaqBookParser {
     NasdaqBookParser();
     ~NasdaqBookParser();
 
-    bool add(AddOrder &new_order);
+    bool add(const AddOrder &new_order);
     bool reduce(uint64_t ref, uint32_t quantity);
     bool remove(uint64_t ref);
-    bool replace(Replace& rep);
-    bool best();
+    bool replace(const Replace& rep);
+
+    Depth depth(size_t n) const;
+    TopOfBook best() const { return book_.cached; }
+    const Counters& counters() const { return book_.stats; }
 
   private:
-    Book book_;
+    NasdqBook book_;
+    void refresh();
+    void erase_order(const Order& o);
+
+    void onNoRef() { book_.stats.unknown_ref++; }
+    void onClamp() { book_.stats.clamped++; }
+    void onCross() { book_.stats.crossed++; }
+
 };

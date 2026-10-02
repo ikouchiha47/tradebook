@@ -68,13 +68,18 @@ Implement as `reduce(ref, UINT32_MAX)` then delete the order entry — one code 
 Unknown ref → same `unknown_ref++` and false.
 
 ## bool replace(Replace& rep) — atomic remove-old + add-new (U)
-Returns true if `old_ref` existed; false if it was missing (anomaly counted, new still filed).
+`U` carries `old_ref, new_ref, shares, price` — **no side**. The new order inherits the
+old order's side, so `old_ref` MUST exist or the new order cannot be placed.
+Returns true if `old_ref` existed and the new order was filed; false if `old_ref` was missing.
 
-1. Look up `old_ref` in `orders`; remember its `side` (the new order keeps the old side).
-   If missing → `stats.unknown_ref++;` (continue anyway).
-2. `remove(old_ref)` — level total/count drop for the old price.
-3. `add({ ref=new_ref, side=old side, price=rep.price, qty=rep.shares })` — new id, loses queue spot.
-4. `return old_existed;`
+1. Look up `old_ref` in `orders`.
+   If missing → `onNoRef(); return false;` (no side available → new order dropped, counted).
+2. Capture `side = old.side` BEFORE erasing.
+3. `erase_order(old)` — drops its level total/count and the order entry.
+4. Synthesize an `AddOrder{ ref=new_ref, side, price_ticks=rep.price, shares=rep.shares }`
+   and call `add()` — files new + grows level + `refresh()`. New id loses queue priority
+   (queue position is not modelled, so nothing else to do).
+5. `return true;`
 
 ## TopOfBook best() const — O(1) read
 Returns `cached` by value: `{bid_px, bid_sz, ask_px, ask_sz}`; zeros mean "no quote on that side".
