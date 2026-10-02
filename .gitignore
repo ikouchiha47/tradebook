@@ -1,0 +1,11 @@
+# Data + secrets: never commit
+*.gz
+*.pcap
+creds/
+# Build artifacts (conan/cmake/make outputs)
+build/
+CMakeUserPresets.json
+compile_commands.json
+conan.lock
+# OS noise
+.DS_Store
