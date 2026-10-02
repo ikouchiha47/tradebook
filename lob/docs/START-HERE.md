@@ -1,7 +1,7 @@
 # START-HERE — P1 ITCH50 LOB (C++20 + Conan + Makefile)
 
-Goal: replay `07302019.NASDAQ_ITCH50.gz` into a correct LOB. You code, this doc is the contract.
-Toolchain: Apple Clang 17 (`-std=c++20`), CMake 4.3, Conan (install via `brew install conan`), `make` wraps everything. See `docs/CONAN-SETUP.md` + `lob/Makefile`.
+Goal: replay `../07302019.NASDAQ_ITCH50.gz` into a correct LOB. You code, this doc is the contract.
+Toolchain: Apple Clang 17 (`-std=c++20`), CMake 4.3, Conan (install via `brew install conan`), `make` wraps everything. See `CONAN-SETUP.md` + `../Makefile`.
 
 ## conan new vs conan build — answer
 - `conan new` = scaffolds a NEW library template. You don't need it; I already give you `conanfile.txt` + `CMakeLists.txt` layout below.
@@ -19,9 +19,9 @@ Toolchain: Apple Clang 17 (`-std=c++20`), CMake 4.3, Conan (install via `brew in
 - T5 replay determinism: `--locate --limit --stats-every`, top-hash every 1M. Done: same 1M slice twice → identical hash, `make replay LIMIT=1000000`.
 - T6 bench: Google Benchmark micro + `make perf`. Done: `make bench` table + one-line method note.
 
-## Files/folders expected (create exactly this)
+## Files/folders expected (create exactly this, rooted at lob/ itself)
 ```
-lob/
+./
   Makefile            (already there — don't touch)
   conanfile.txt       (from CONAN-SETUP.md)
   CMakeLists.txt      (C++20, ZLIB, GTest, benchmark)

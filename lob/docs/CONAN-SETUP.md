@@ -1,6 +1,6 @@
 # Conan 2 setup — lob/ C++20 (validated)
 
-## conanfile.txt (lob/conanfile.txt)
+## conanfile.txt (../conanfile.txt)
 ```ini
 [requires]
 zlib/1.3.1
@@ -23,7 +23,7 @@ conan install . --output-folder=build --build=missing -s compiler.cppstd=20
 ```
 Or edit `~/.conan2/profiles/default` → `compiler.cppstd=20`.
 
-## CMake excerpt (lob/CMakeLists.txt)
+## CMake excerpt (../CMakeLists.txt)
 ```cmake
 cmake_minimum_required(VERSION 3.23)
 project(lob CXX)
@@ -40,7 +40,7 @@ find_package(benchmark REQUIRED)
 ```bash
 conan install . --output-folder=build --build=missing -s compiler.cppstd=20
 cmake --preset conan-release
-cmake --build build/Release
+cmake --build build/build/Release   # nested: cmake_layout + --output-folder=build
 # pin: conan lock create . ; conan install --lockfile=conan.lock --lockfile-out=conan.lock
 ```
 
