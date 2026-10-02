@@ -8,6 +8,20 @@ Rules for every mutator:
 - After touching a price, restamp `cached` (best bid = top of `bids`, best ask = top of `asks`).
 - Never throw, never abort the fold. Bad input → bump a `Counters` field and return false.
 
+## Containers and ordering (why these types)
+- `bids` / `asks` are `std::map<int64_t, Level>` — a red-black tree kept sorted by price
+  key automatically on every insert/erase. **Never call `sort()`; the map is always ordered.**
+  Sorted is required because "best" is an ordering query: best bid = highest price,
+  best ask = lowest price. `rbegin()` = highest bid, `begin()` = lowest ask, both O(1) to read.
+- `orders` is `std::unordered_map<uint64_t, Order>` — only ever looked up by `ref`
+  ("give me order X"), never iterated in order, so hashing is the right fit.
+- Using an unordered map for levels would force a full scan of every level on each
+  `best()` call to find the max/min — O(levels) per query instead of a tree-edge peek.
+- Cost of `std::map`: nodes are heap-allocated and pointer-chased, so inserts are not
+  cache-friendly (O(log n) each). Fine for thousands of levels per symbol. If `perf`
+  flags it, the alternative is a tick-indexed array ladder (index = price, sorted by
+  construction, O(1) everything) — deferred to the P1.5 bench, needs a bounded price range.
+
 ## bool add(AddOrder& o) — file one birth (A/F)
 Returns true if the order was filed; false if `o.side` is not `'B'` or `'S'`.
 
