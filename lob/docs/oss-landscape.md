@@ -78,3 +78,47 @@ copying rules per license at the bottom.
 - BSL-1.1 (man-group/ArcticDB) — source-available, NOT open source; paid license for production. Read-only.
 - No license at all — all rights reserved. Read-only; copying is not permitted (ask author).
 - Rule: build from MIT/Apache/BSD; read GPL/AGPL/BSL sources for ideas only.
+
+## More Rust sources (2026-10-05 sweep; AGPL/GPL flagged)
+
+Tick-ladder layouts (directly relevant to P1.5):
+- `AsthaMishra/matching-engine` (no license!) — `Vec<Option<PriceLevel>>` tick ladder +
+  `u64` bitboard + `order_index`, **plus an ITCH replay binary**. Closest to target design.
+- `hsdxpro/matching-engine` (MIT) — full array ladder (`[Vec<PriceLevel>;2]`, 65,536 ticks) +
+  **hierarchical occupancy bitmap** (`leaf`/`summary` u64 words) + `id_to_slot` flat lookup.
+- `inv2004/orderbook-rs` (Apache-2.0) — direct-indexed `Vec<VecDeque<(f64,Uuid)>>`.
+- `llc-993/matching-core` (no license) — **3 switchable backends in one repo**: naive queue /
+  `BTreeMap` buckets / SoA parallel-`Vec` ladder. Best for comparing tradeoffs.
+
+BTreeMap-based matching (baseline pattern):
+- `minyukim/matchcore` (Apache-2.0) — `BTreeMap<Price,LevelId>` + `Slab<PriceLevel>` +
+  `FxHashMap` order index + `VecDeque` FIFO; explicit design notes.
+- `gocronx/matcher` (MIT) — `BTreeMap<Price,PriceLevel>` + `AHashMap` + `SmallVec` per level.
+- `lanpishu6300/match-rust` (Apache-2.0) — `BTreeMap<i64,Level>` + `VecDeque<u64>` ids.
+- `jmcph4/ironlobe` (MIT) — `BTreeMap<PriceKey,VecDeque>` + `HashMap<OrderId,Order>`.
+- `rubik/lobster` (ISC) — `BTreeMap<u64,Vec<usize>>`.
+- `fluidex/dingir-exchange` (no license) — `BTreeMap<MarketKeyAsk/Bid,OrderRc>` spot engine.
+- `CheetahExchange/orderbook-rs` (MIT) — `HashMap` + `BTreeMap` queue (Tokio).
+
+Copyleft (read-only for ideas, per license rules above):
+- `MathisWellmann/lfest-rs` (**AGPL-3.0**) — simulated leveraged-futures exchange; sorted-`Vec` orders.
+- `deepentropy/ibx` (**AGPL-3.0**) — Interactive Brokers connection engine.
+- `purefinance/mmb` (**GPL-3.0**) — market-making bot w/ local LOB (`BTreeMap`).
+- `Bonasa-Tech/manifest`, `jmakov/dragonflybot` (GPL-3.0).
+
+Feed / transport / infra (Rust):
+- `databento/dbn` (Apache-2.0) — market-data binary encoding + zero-copy decode.
+- `ferrumfix/ferrumfix` (no license!) — FIX + FAST codec.
+- `wingfoil-io/wingfoil` (Apache-2.0) — ultra-low-latency stream graph.
+- `Erio-Harrison/rust-trade` (MIT) — live/backtest quant system (feed→exec).
+- `Lqz13Th/extrema_infra` (Apache-2.0) — high-perf quant infra.
+
+Notable crates.io crates (all-time downloads):
+- `concurrent-queue` 357M (MPMC), `ringbuf` 20.1M (SPSC), `rtrb` 12.6M (realtime SPSC),
+  `kanal` 10.8M, `matching_engine` 10.7M, `seqlock` 4.9M, `thingbuf` 1.6M,
+  `dbn` 1.26M, `spsc-bip-buffer` 92k, `pricelevel` 102k (lock-free price level),
+  `fefix` 107k (FIX/FAST), `matchina`, `limitbook`, `nanobook`, `matchcore`.
+
+Top 5 worth reading: `AsthaMishra/matching-engine` (ladder+bitboard+ITCH replay),
+`hsdxpro/matching-engine` (hierarchical bitmap), `llc-993/matching-core` (3 backends),
+`minyukim/matchcore` (clean BTreeMap baseline), `gocronx/matcher` (compact baseline).
