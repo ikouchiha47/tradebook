@@ -72,6 +72,11 @@ alloc (3.3 ns); `add`/`remove` (14/18 ns) pay `std::map`+`unordered_map` node op
 `refresh()`; `replace` = remove+add (36 ns); `depth(5)` pays a small vector build (42 ns).
 `BM_ParseThenApplyA` = the pure-compute per-order path (parse + file), no I/O.
 
+**Takeaway: the book's read/reduce path is near-free; writes cost map nodes.**
+`best()` (0.3 ns) and partial `reduce` (3.3 ns) are essentially free; `add`/`remove`
+(14–18 ns) and `replace` (36 ns) pay `std::map`/`unordered_map` node insert/erase +
+pointer chasing. That's the compute hotspot to attack with a tick ladder (ADR-0001).
+
 ## Bottlenecks (profiling)
 Stage split (`--stages`, 20M msgs): **read 85% / route 15%** — the cost is gzip
 decompression + framing, not the book.
