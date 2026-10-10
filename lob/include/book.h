@@ -1,22 +1,17 @@
 #pragma once
-#include "feed.h"
-#include "itch.h"
 #include "bitmap.h"
+#include "itch.h"
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <map>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
-// The Book turns your parsed structs into answers. Five jobs, nothing else:
-// 1. add(AddOrder) — file order by ref, add qty to its price level. (A/F land here.)
-// 2. reduce(ref, qty) — subtract from order + level, erase level at zero. (E/X land here; unknown ref → count, no-op.)
-// 3. remove(ref) — full delete. (D lands here.)
-// 4. replace(Replace) — atomic remove-old + add-new. (U lands here.)
-// 5. best() / depth(n) — read-only: top bid/ask pair, top-n rows per side. Everything downstream (replay stats, sim fills, strategy) reads through these two.
-// That plus the two maps is the component: events in via 1–4, state out via 5.
-//
-
+// ---------------------------------------------------------------------------
+// Data
+// ---------------------------------------------------------------------------
 struct Order {
   uint64_t ref = 0;
   int64_t price = 0;
@@ -35,7 +30,7 @@ struct LevelRow {
   uint32_t count = 0;
 };
 
-struct Depth{
+struct Depth {
   std::vector<LevelRow> bids, asks;
 };
 
@@ -50,93 +45,135 @@ struct Counters {
   uint64_t crossed = 0;
 };
 
-
+// ---------------------------------------------------------------------------
+// Tick ladder for one side. Owns occupancy so highest()/lowest() work.
+//   add_order    : a new order arrived  -> count++, total += qty
+//   sub_share    : partial reduce       -> total -= qty (order still rests)
+//   remove_order : an order left        -> count--, total -= qty
+// ---------------------------------------------------------------------------
 class PriceLadder {
-public:
-    explicit PriceLadder() = default;
-    explicit PriceLadder(int64_t base, int64_t inc, size_t slots);
-    Level& at(int64_t px);
-    Level* find(int64_t px);
+ public:
+  PriceLadder() = default;
+  PriceLadder(int64_t base, int64_t inc, size_t slots)
+      : base_(base), inc_(inc), slots_(slots), hot_(slots), occ_(slots) {}
 
-    void add_order(int64_t px, uint32_t qty);
-    void erase(int64_t px);
-    int64_t highest() const;
-    int64_t lowest() const;
+  void add_order(int64_t px, uint32_t qty);
+  void sub_share(int64_t px, uint32_t qty);
+  void remove_order(int64_t px, uint32_t qty);
 
-private:
-  int64_t base_, inc_;
-  size_t slots_;
+  Level* find(int64_t px);
+  int64_t highest() const;    // best bid price, 0 if none
+  int64_t lowest() const;     // best ask price, 0 if none
+  void top(bool is_bid, size_t n, std::vector<LevelRow>& out) const;
 
+ private:
+  int64_t base_ = 0, inc_ = 0;
+  size_t slots_ = 0;
   std::vector<Level> hot_;
   std::map<int64_t, Level> cold_;
-
   Occupancy occ_;
 
-  bool in_band(int64_t px) {
-    return px >= base_ && index(px) < slots_;
+  bool in_hot(int64_t px) const {
+    if (px < base_ || inc_ == 0) return false;
+    return (px - base_) % inc_ == 0 && index(px) < slots_;
   }
-  size_t index(int64_t px) const {
-    return (px - base_) / inc_;
-  };
+  size_t index(int64_t px) const { return static_cast<size_t>((px - base_) / inc_); }
+  Level& at(int64_t px) { return in_hot(px) ? hot_[index(px)] : cold_[px]; }
 };
 
-
+// ---------------------------------------------------------------------------
+// Book A — std::map levels (reference implementation)
+// ---------------------------------------------------------------------------
 struct NasdqBook {
-  std::unordered_map<uint64_t, Order> orders;  // ref → live order (side/price/qty for cancels)
-  std::map<int64_t, Level> bids;               // buy-side rows, price → {total, count}
-  std::map<int64_t, Level> asks;               // sell-side rows, same
-  TopOfBook cached{};                            // best bid/ask, re-stamped per apply (best() is O(1))
-  Counters stats{};                              // unknown_ref, clamped, crossed — the REQ-P1-040..042 armor
-
-  NasdqBook() = default;
-};
-
-struct NasdqBookWithLadder {
   std::unordered_map<uint64_t, Order> orders;
-
-  PriceLadder bids;
-  PriceLadder asks;
+  std::map<int64_t, Level> bids, asks;
   TopOfBook cached{};
   Counters stats{};
 
-  NasdqBookWithLadder() = default;
+  void add_order(int64_t px, char side, uint32_t qty) {
+    Level& l = (side == 'B') ? bids[px] : asks[px];
+    l.total += qty;
+    l.count += 1;
+  }
+  void sub_share(int64_t px, char side, uint32_t qty) {
+    auto& m = (side == 'B') ? bids : asks;
+    auto it = m.find(px);
+    if (it != m.end()) it->second.total -= qty;
+  }
+  void remove_order(int64_t px, char side, uint32_t qty) {
+    auto& m = (side == 'B') ? bids : asks;
+    auto it = m.find(px);
+    if (it == m.end()) return;
+    it->second.total -= qty;
+    if (--it->second.count == 0) m.erase(it);
+  }
+  Level* find_level(int64_t px, char side) {
+    auto& m = (side == 'B') ? bids : asks;
+    auto it = m.find(px);
+    return it == m.end() ? nullptr : &it->second;
+  }
+  int64_t best_bid() const { return bids.empty() ? 0 : bids.rbegin()->first; }
+  int64_t best_ask() const { return asks.empty() ? 0 : asks.begin()->first; }
+  void top(char side, size_t n, std::vector<LevelRow>& out) const {
+    if (side == 'B') {
+      for (auto it = bids.rbegin(); it != bids.rend() && out.size() < n; ++it)
+        out.push_back({it->first, it->second.total, it->second.count});
+    } else {
+      for (auto it = asks.begin(); it != asks.end() && out.size() < n; ++it)
+        out.push_back({it->first, it->second.total, it->second.count});
+    }
+  }
 };
 
+// ---------------------------------------------------------------------------
+// Book B — tick ladder levels (needs a band: base, inc, slots)
+// ---------------------------------------------------------------------------
+struct NasdqBookWithLadder {
+  std::unordered_map<uint64_t, Order> orders;
+  PriceLadder bids, asks;
+  TopOfBook cached{};
+  Counters stats{};
+
+  NasdqBookWithLadder(int64_t base, int64_t inc, size_t slots)
+      : bids(base, inc, slots), asks(base, inc, slots) {}
+
+  void add_order(int64_t px, char side, uint32_t qty) { ladder(side).add_order(px, qty); }
+  void sub_share(int64_t px, char side, uint32_t qty) { ladder(side).sub_share(px, qty); }
+  void remove_order(int64_t px, char side, uint32_t qty) { ladder(side).remove_order(px, qty); }
+  Level* find_level(int64_t px, char side) { return ladder(side).find(px); }
+  int64_t best_bid() const { return bids.highest(); }
+  int64_t best_ask() const { return asks.lowest(); }
+  void top(char side, size_t n, std::vector<LevelRow>& out) const {
+    if (side == 'B') bids.top(true, n, out);
+    else             asks.top(false, n, out);
+  }
+
+ private:
+  PriceLadder& ladder(char side) { return (side == 'B') ? bids : asks; }
+};
+
+// ---------------------------------------------------------------------------
+// The driver — one body, two books (static polymorphism via template, no concepts)
+// ---------------------------------------------------------------------------
+template <class Book>
 class NasdaqBookParser {
-  public:
-    NasdaqBookParser();
-    ~NasdaqBookParser();
+ public:
+  explicit NasdaqBookParser(Book b) : book_(std::move(b)) {}
 
-    bool add(const AddOrder &new_order);
-    bool reduce(uint64_t ref, uint32_t quantity);
-    bool remove(uint64_t ref);
-    bool replace(const Replace& rep);
+  bool add(const AddOrder& new_order);
+  bool reduce(uint64_t ref, uint32_t quantity);
+  bool remove(uint64_t ref);
+  bool replace(const Replace& rep);
 
-    Depth depth(size_t n) const;
-    TopOfBook best() const { return book_.cached; }
-    const Counters& counters() const { return book_.stats; }
+  Depth depth(size_t n) const;
+  TopOfBook best() const { return book_.cached; }
+  const Counters& counters() const { return book_.stats; }
 
-  private:
-    NasdqBook book_;
-    void refresh();
-    void erase_order(const Order& o);
-
-    void onNoRef() { book_.stats.unknown_ref++; }
-    void onClamp() { book_.stats.clamped++; }
-    void onCross() { book_.stats.crossed++; }
-
+ private:
+  Book book_;
+  void refresh();
+  void erase_order(const Order& o);
+  void onNoRef() { ++book_.stats.unknown_ref; }
+  void onClamp() { ++book_.stats.clamped; }
+  void onCross() { ++book_.stats.crossed; }
 };
-
-// There is a choice regarding how to maintain the
-// highest bid and lowest ask
-// 
-// Two ways:
-// - cursor
-// - hierarchical bitmap (behaving like trie)
-//
-// the cursor maintains 2 flags, best_ask and best_bid
-// at every B-id and S-ell
-// rescan's on delete or exits
-// need to walk the array to figure out the right place
-//
-// the bitmap 64bits, 2^6 ~ 6bits

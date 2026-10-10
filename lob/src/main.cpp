@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
   }
 
   NasdaqRawMsg m;
-  NasdaqBookParser book;
+  NasdaqBookParser<NasdqBook> book(NasdqBook{});
   std::unordered_map<uint16_t, std::string> sym;  // locate -> symbol (from R)
 
   uint64_t n = 0;              // messages read

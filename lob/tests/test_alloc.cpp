@@ -41,7 +41,7 @@ AddOrder mk(uint64_t ref, char side, uint32_t shares, int64_t px) {
 
 // reduce() and best() on existing state must not allocate.
 TEST(Alloc, ReduceAndBestAreAllocFree) {
-  NasdaqBookParser book;
+  NasdaqBookParser<NasdqBook> book(NasdqBook{});
   constexpr uint64_t kN = 1000;
 
   // Warm-up: build orders across 50 levels. This DOES allocate (before measuring).
@@ -67,7 +67,7 @@ TEST(Alloc, ReduceAndBestAreAllocFree) {
 
 // Documented caveat: adding a NEW price level allocates a map node.
 TEST(Alloc, AddNewLevelAllocates) {
-  NasdaqBookParser book;
+  NasdaqBookParser<NasdqBook> book(NasdqBook{});
   book.add(mk(1, 'B', 100, 5000000));  // first level allocates
 
   const uint64_t before = g_allocs.load(std::memory_order_relaxed);

@@ -40,8 +40,8 @@ const std::vector<uint8_t> kU = unhex(
     "5519d400000d18c4f0020c00000000000003b700000000000020d70000012c0009ca40");
 
 // Book pre-filled with `levels` bid rows and `levels` ask rows.
-NasdaqBookParser make_book(int levels) {
-  NasdaqBookParser b;
+NasdaqBookParser<NasdqBook> make_book(int levels) {
+  NasdaqBookParser<NasdqBook> b(NasdqBook{});
   AddOrder a{};
   a.side = 'B';
   a.shares = 100;
@@ -152,7 +152,7 @@ BENCHMARK(BM_ParseU);
 // ---- order book ops (state reset inside PauseTiming, so it isn't measured) ----
 
 void BM_BookAdd(benchmark::State& s) {
-  std::optional<NasdaqBookParser> book;
+  std::optional<NasdaqBookParser<NasdqBook>> book;
   AddOrder a{};
   a.side = 'B';
   a.shares = 100;
@@ -162,7 +162,7 @@ void BM_BookAdd(benchmark::State& s) {
   for (auto _ : s) {
     if ((ref % kBatch) == 0) {
       s.PauseTiming();
-      book.emplace();
+      book.emplace(NasdqBook{});
       s.ResumeTiming();
     }
     a.ref = ++ref;
@@ -172,7 +172,7 @@ void BM_BookAdd(benchmark::State& s) {
 BENCHMARK(BM_BookAdd);
 
 void BM_BookReduce(benchmark::State& s) {
-  NasdaqBookParser book;
+  NasdaqBookParser<NasdqBook> book(NasdqBook{});
   AddOrder a{};
   a.ref = 1;
   a.side = 'B';
@@ -184,7 +184,7 @@ void BM_BookReduce(benchmark::State& s) {
 BENCHMARK(BM_BookReduce);
 
 void BM_BookRemove(benchmark::State& s) {
-  std::optional<NasdaqBookParser> book;
+  std::optional<NasdaqBookParser<NasdqBook>> book;
   AddOrder a{};
   a.side = 'B';
   a.shares = 100;
@@ -192,7 +192,7 @@ void BM_BookRemove(benchmark::State& s) {
   constexpr uint64_t kBatch = 4096;
   uint64_t base = 0;
   auto refill = [&] {
-    book.emplace();
+    book.emplace(NasdqBook{});
     for (uint64_t i = 0; i < kBatch; ++i) {
       a.ref = base + i;
       book->add(a);
@@ -215,7 +215,7 @@ void BM_BookRemove(benchmark::State& s) {
 BENCHMARK(BM_BookRemove);
 
 void BM_BookReplace(benchmark::State& s) {
-  NasdaqBookParser book;
+  NasdaqBookParser<NasdqBook> book(NasdqBook{});
   AddOrder a{};
   a.ref = 1;
   a.side = 'B';
@@ -236,13 +236,13 @@ void BM_BookReplace(benchmark::State& s) {
 BENCHMARK(BM_BookReplace);
 
 void BM_BookBest(benchmark::State& s) {
-  NasdaqBookParser book = make_book(100);
+  auto book = make_book(100);
   for (auto _ : s) benchmark::DoNotOptimize(book.best());
 }
 BENCHMARK(BM_BookBest);
 
 void BM_BookDepth5(benchmark::State& s) {
-  NasdaqBookParser book = make_book(100);
+  auto book = make_book(100);
   for (auto _ : s) benchmark::DoNotOptimize(book.depth(5));
 }
 BENCHMARK(BM_BookDepth5);
@@ -250,7 +250,7 @@ BENCHMARK(BM_BookDepth5);
 // ---- pipeline: parse one real A + file it (compute only, no gzip) ----
 
 void BM_ParseThenApplyA(benchmark::State& s) {
-  std::optional<NasdaqBookParser> book;
+  std::optional<NasdaqBookParser<NasdqBook>> book;
   std::vector<uint8_t> d = kA;
   AddOrder a;
   constexpr uint64_t kBatch = 4096;
@@ -258,7 +258,7 @@ void BM_ParseThenApplyA(benchmark::State& s) {
   for (auto _ : s) {
     if ((ref % kBatch) == 0) {
       s.PauseTiming();
-      book.emplace();
+      book.emplace(NasdqBook{});
       s.ResumeTiming();
     }
     d[19] ^= 1;
@@ -268,5 +268,131 @@ void BM_ParseThenApplyA(benchmark::State& s) {
   }
 }
 BENCHMARK(BM_ParseThenApplyA);
+
+// ===========================================================================
+// Book B — tick ladder (same workloads, ladder levels). Band covers the
+// bench price range: bids 5,000,000-..4,990,100, asks ..5,010,000, penny step.
+// ===========================================================================
+constexpr int64_t kLadderBase = 4990000;
+constexpr int64_t kLadderInc = 100;
+constexpr size_t kLadderSlots = 201;
+
+NasdaqBookParser<NasdqBookWithLadder> make_book_ladder(int levels) {
+  NasdaqBookParser<NasdqBookWithLadder> b(
+      NasdqBookWithLadder(kLadderBase, kLadderInc, kLadderSlots));
+  AddOrder a{};
+  a.side = 'B';
+  a.shares = 100;
+  for (int i = 0; i < levels; ++i) {
+    a.ref = 1000 + i;
+    a.price_ticks = 5000000 - i * 100;
+    b.add(a);
+  }
+  a.side = 'S';
+  for (int i = 0; i < levels; ++i) {
+    a.ref = 2000 + i;
+    a.price_ticks = 5000100 + i * 100;
+    b.add(a);
+  }
+  return b;
+}
+
+void BM_BookAddLadder(benchmark::State& s) {
+  std::optional<NasdaqBookParser<NasdqBookWithLadder>> book;
+  AddOrder a{};
+  a.side = 'B';
+  a.shares = 100;
+  a.price_ticks = 5000000;
+  constexpr uint64_t kBatch = 4096;
+  uint64_t ref = 0;
+  for (auto _ : s) {
+    if ((ref % kBatch) == 0) {
+      s.PauseTiming();
+      book.emplace(NasdqBookWithLadder(kLadderBase, kLadderInc, kLadderSlots));
+      s.ResumeTiming();
+    }
+    a.ref = ++ref;
+    benchmark::DoNotOptimize(book->add(a));
+  }
+}
+BENCHMARK(BM_BookAddLadder);
+
+void BM_BookReduceLadder(benchmark::State& s) {
+  NasdaqBookParser<NasdqBookWithLadder> book(
+      NasdqBookWithLadder(kLadderBase, kLadderInc, kLadderSlots));
+  AddOrder a{};
+  a.ref = 1;
+  a.side = 'B';
+  a.shares = 0xFFFFFFFFu;
+  a.price_ticks = 5000000;
+  book.add(a);
+  for (auto _ : s) benchmark::DoNotOptimize(book.reduce(1, 1));
+}
+BENCHMARK(BM_BookReduceLadder);
+
+void BM_BookRemoveLadder(benchmark::State& s) {
+  std::optional<NasdaqBookParser<NasdqBookWithLadder>> book;
+  AddOrder a{};
+  a.side = 'B';
+  a.shares = 100;
+  a.price_ticks = 5000000;
+  constexpr uint64_t kBatch = 4096;
+  uint64_t base = 0;
+  auto refill = [&] {
+    book.emplace(NasdqBookWithLadder(kLadderBase, kLadderInc, kLadderSlots));
+    for (uint64_t i = 0; i < kBatch; ++i) {
+      a.ref = base + i;
+      book->add(a);
+    }
+  };
+  refill();
+  uint64_t k = 0;
+  for (auto _ : s) {
+    if (k == kBatch) {
+      s.PauseTiming();
+      base += kBatch;
+      refill();
+      s.ResumeTiming();
+      k = 0;
+    }
+    benchmark::DoNotOptimize(book->remove(base + k));
+    ++k;
+  }
+}
+BENCHMARK(BM_BookRemoveLadder);
+
+void BM_BookReplaceLadder(benchmark::State& s) {
+  NasdaqBookParser<NasdqBookWithLadder> book(
+      NasdqBookWithLadder(kLadderBase, kLadderInc, kLadderSlots));
+  AddOrder a{};
+  a.ref = 1;
+  a.side = 'B';
+  a.shares = 100;
+  a.price_ticks = 5000000;
+  book.add(a);
+  Replace r{};
+  r.shares = 100;
+  r.price = 5000000;
+  uint64_t cur = 1;
+  for (auto _ : s) {
+    r.old_ref = cur;
+    r.new_ref = cur + 1;
+    benchmark::DoNotOptimize(book.replace(r));
+    ++cur;
+  }
+}
+BENCHMARK(BM_BookReplaceLadder);
+
+void BM_BookBestLadder(benchmark::State& s) {
+  auto book = make_book_ladder(100);
+  for (auto _ : s) benchmark::DoNotOptimize(book.best());
+}
+BENCHMARK(BM_BookBestLadder);
+
+void BM_BookDepth5Ladder(benchmark::State& s) {
+  auto book = make_book_ladder(100);
+  for (auto _ : s) benchmark::DoNotOptimize(book.depth(5));
+}
+BENCHMARK(BM_BookDepth5Ladder);
 
 }  // namespace

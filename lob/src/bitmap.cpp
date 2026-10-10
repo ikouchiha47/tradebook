@@ -76,30 +76,23 @@ void Occupancy::clear(size_t slot) {
 }
 
 int Occupancy::highest() const {
-  // for(auto it = root_.rbegin(); it != root_.rend(); it++) {
-  int64_t r = static_cast<int64_t>(root_.size() - 1);
-
-  for(; r >= 0; r--) {
-    if(root_[r]) {
-      size_t sw = r * 64 + (kMask - clz(root_[r]));
-      size_t lw = sw * 64 + (kMask - clz(summary_[sw]));
-
-      return (lw * 64 + (kMask - clz(leaf_[lw])));
+  for (int64_t r = static_cast<int64_t>(root_.size()) - 1; r >= 0; --r) {
+    if (root_[r]) {
+      const size_t sw = static_cast<size_t>(r) * 64 + (kMask - clz(root_[r]));
+      const size_t lw = sw * 64 + (kMask - clz(summary_[sw]));
+      return static_cast<int>(lw * 64 + (kMask - clz(leaf_[lw])));
     }
-
-    return -1;
   }
+  return -1;  // empty
 }
 
 int Occupancy::lowest() const {
-  for(size_t r = 0; r < root_.size(); r++) {
-    if(root_[r]) {
-      size_t sw = r * 64 + (kMask - ctz(root_[r]));
-      size_t lw = sw * 64 + (kMask - ctz(summary_[sw]));
-
-      return (lw * 64 + (kMask - ctz(leaf_[lw])));
+  for (size_t r = 0; r < root_.size(); ++r) {
+    if (root_[r]) {
+      const size_t sw = r * 64 + ctz(root_[r]);
+      const size_t lw = sw * 64 + ctz(summary_[sw]);
+      return static_cast<int>(lw * 64 + ctz(leaf_[lw]));
     }
-
-    return -1;
   }
+  return -1;  // empty
 }

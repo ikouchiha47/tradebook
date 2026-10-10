@@ -1,219 +1,207 @@
 #include "book.h"
-#include "itch.h"
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <utility>
 #include <vector>
 
-PriceLadder::PriceLadder(int64_t base, int64_t inc, size_t slots) {
-  base_ = base;
-  inc_ = inc;
-  slots_ = slots;
-
-  hot_ = std::vector<Level>(slots);
-  occ_ = Occupancy(slots);
+// ===========================================================================
+// PriceLadder
+// ===========================================================================
+void PriceLadder::add_order(int64_t px, uint32_t qty) {
+  if (in_hot(px)) {
+    Level& l = hot_[index(px)];
+    if (l.count == 0) occ_.set(index(px));  // 0 -> 1 occupancy bit
+    l.total += qty;
+    l.count += 1;
+  } else {
+    Level& l = cold_[px];
+    l.total += qty;
+    l.count += 1;
+  }
 }
 
-Level& PriceLadder::at(int64_t px) {
-  int64_t absPrice = px - base_;
-  // save either in hot or cold based on if its mappable
-  if(in_band(px) && absPrice % inc_ == 0) {
-    return hot_[index(px)];
+void PriceLadder::sub_share(int64_t px, uint32_t qty) {
+  Level* l = find(px);        // order still rests: count unchanged
+  if (l) l->total -= qty;
+}
+
+void PriceLadder::remove_order(int64_t px, uint32_t qty) {
+  if (in_hot(px)) {
+    Level& l = hot_[index(px)];
+    l.total -= qty;
+    if (--l.count == 0) {
+      occ_.clear(index(px));  // 1 -> 0 occupancy bit
+      l.total = 0;
+    }
+  } else {
+    auto it = cold_.find(px);
+    if (it == cold_.end()) return;
+    it->second.total -= qty;
+    if (--it->second.count == 0) cold_.erase(it);
   }
-
-   // auto it = cold_.find(px);
-
-  return cold_[px]; // apparently this is get or create
 }
 
 Level* PriceLadder::find(int64_t px) {
-  if (in_band(px) && (px - base_) % inc_ == 0) {
+  if (in_hot(px)) {
     Level& l = hot_[index(px)];
-    return l.count ? &l : nullptr;         // an all-zero slot = no level
+    return l.count ? &l : nullptr;
   }
-
   auto it = cold_.find(px);
   return it == cold_.end() ? nullptr : &it->second;
 }
 
-void PriceLadder::erase(int64_t px) {
-  if(in_band(px) && (px - base_) % inc_ == 0) {
-    hot_[index(px)] = Level{};
-  } else {
-    cold_.erase(px);
-  }
-}
-
 int64_t PriceLadder::highest() const {
-
+  int slot = occ_.highest();
+  int64_t best = (slot < 0) ? 0 : base_ + static_cast<int64_t>(slot) * inc_;
+  if (!cold_.empty()) {
+    int64_t cp = cold_.rbegin()->first;
+    best = (best == 0) ? cp : std::max(best, cp);
+  }
+  return best;
 }
 
 int64_t PriceLadder::lowest() const {
-
+  int slot = occ_.lowest();
+  int64_t best = (slot < 0) ? 0 : base_ + static_cast<int64_t>(slot) * inc_;
+  if (!cold_.empty()) {
+    int64_t cp = cold_.begin()->first;
+    best = (best == 0) ? cp : std::min(best, cp);
+  }
+  return best;
 }
 
-NasdaqBookParser::NasdaqBookParser() = default;
-NasdaqBookParser::~NasdaqBookParser() = default;
-
-void NasdaqBookParser::erase_order(const Order &o) {
-  // here order side can only be B or S
-  auto& map = (o.side == 'B') ? book_.bids : book_.asks;
-  auto lvl = map.find(o.price);
-
-  if(lvl != map.end()) {
-    lvl->second.total -= o.qty;
-    if(--lvl->second.count == 0) map.erase(lvl);
+void PriceLadder::top(bool is_bid, size_t n, std::vector<LevelRow>& out) const {
+  const int s = is_bid ? occ_.highest() : occ_.lowest();  // best occupied slot, O(1)
+  if (s < 0) return;                                      // empty side
+  if (is_bid) {
+    for (size_t i = static_cast<size_t>(s) + 1; i-- > 0 && out.size() < n; ) {
+      if (hot_[i].count)
+        out.push_back({base_ + static_cast<int64_t>(i) * inc_, hot_[i].total, hot_[i].count});
+    }
+  } else {
+    for (size_t i = static_cast<size_t>(s); i < slots_ && out.size() < n; ++i) {
+      if (hot_[i].count)
+        out.push_back({base_ + static_cast<int64_t>(i) * inc_, hot_[i].total, hot_[i].count});
+    }
   }
+}
 
+// ===========================================================================
+// NasdaqBookParser<Book>
+// ===========================================================================
+template <class Book>
+void NasdaqBookParser<Book>::erase_order(const Order& o) {
+  book_.remove_order(o.price, o.side, o.qty);
   book_.orders.erase(o.ref);
 }
 
-void NasdaqBookParser::refresh() {
-  if(!book_.bids.empty()) {
-    auto it = book_.bids.rbegin(); // highest from back
-
-    book_.cached.bid_px = it->first; // key
-    book_.cached.bid_sz = it->second.total;
-  } else  {
-    book_.cached.bid_sz = 0;
+template <class Book>
+void NasdaqBookParser<Book>::refresh() {
+  const int64_t bp = book_.best_bid();
+  if (bp != 0) {
+    Level* l = book_.find_level(bp, 'B');
+    book_.cached.bid_px = bp;
+    book_.cached.bid_sz = l ? l->total : 0;
+  } else {
     book_.cached.bid_px = 0;
+    book_.cached.bid_sz = 0;
   }
 
-  if(!book_.asks.empty()) {
-    auto it = book_.asks.begin(); // lowest ask
-
-    book_.cached.ask_px = it->first;
-    book_.cached.ask_sz = it->second.total;
+  const int64_t ap = book_.best_ask();
+  if (ap != 0) {
+    Level* l = book_.find_level(ap, 'S');
+    book_.cached.ask_px = ap;
+    book_.cached.ask_sz = l ? l->total : 0;
   } else {
     book_.cached.ask_px = 0;
     book_.cached.ask_sz = 0;
   }
 
-  // correctness check
-  // Best bid ≥ best ask is impossible in a real marke
   if (book_.cached.bid_px != 0 && book_.cached.ask_px != 0 &&
       book_.cached.bid_px >= book_.cached.ask_px) {
-
     onCross();
-  }}
+  }
+}
 
-bool NasdaqBookParser::add(const AddOrder& new_order) {
-  if (new_order.side != 'B' && new_order.side != 'S')
-    return false;
+template <class Book>
+bool NasdaqBookParser<Book>::add(const AddOrder& o) {
+  if (o.side != 'B' && o.side != 'S') return false;
 
-  Order order = {
-    .ref = new_order.ref,
-    .price = static_cast<int64_t>(new_order.price_ticks),
-    .qty = new_order.shares,
-    .side = new_order.side,
-  };
+  Order order{o.ref, static_cast<int64_t>(o.price_ticks), o.shares, o.side};
 
   auto it = book_.orders.find(order.ref);
-  if (it != book_.orders.end()) erase_order(it->second);
+  if (it != book_.orders.end()) erase_order(it->second);  // dup ref: unwind old
 
-  Level* lvl = nullptr;
-  // Level& lvl; // cannot be null, but same point to map
-  // & .. ref is the object
-  // * .. points to the object
-  if(order.side == 'B') {
-lvl = &(book_.bids[order.price]);
-  } else if(order.side == 'S') {
-    lvl = &(book_.asks[order.price]);
-  }
-  
-  if(lvl == nullptr) return false;
+  book_.orders[order.ref] = order;
+  book_.add_order(order.price, order.side, order.qty);
 
-  book_.orders[new_order.ref] = order;
-
-  lvl->count += 1;
-  lvl->total += order.qty;
-
-  this->refresh();
+  refresh();
   return true;
 }
 
-bool NasdaqBookParser::remove(uint64_t ref) {
+template <class Book>
+bool NasdaqBookParser<Book>::reduce(uint64_t ref, uint32_t quantity) {
   auto it = book_.orders.find(ref);
-  
   if (it == book_.orders.end()) {
-    // bookkeep
-    this->onNoRef();
-    return false;
-  }
-
-  erase_order(it->second);
-  this->refresh();
-
-  return true;
-}
-
-
-bool NasdaqBookParser::reduce(uint64_t ref, uint32_t quantity) {
-  auto it = book_.orders.find(ref);
-  
-  if (it == book_.orders.end()) {
-    // bookkeep
-    this->onNoRef();
-    return false;
-  }
-
-  Order& order  = it->second;
-
-  if (quantity >= order.qty) {
-    if (quantity > order.qty) this->onClamp();
-
-    this->erase_order(order);
-
-  } else {
-    auto& map = (order.side == 'B') ? book_.bids : book_.asks;
-    map[order.price].total -= quantity;
-    order.qty -= quantity;
-  }
-  
-  this->refresh();
-
-  return true;
-}
-
-bool NasdaqBookParser::replace(const Replace &rep) {
-  auto it = book_.orders.find(rep.old_ref);
-  if(it == book_.orders.end()) {
     onNoRef();
     return false;
   }
 
-  char side = it->second.side;
+  Order& order = it->second;
+  if (quantity >= order.qty) {
+    if (quantity > order.qty) onClamp();
+    erase_order(order);
+  } else {
+    book_.sub_share(order.price, order.side, quantity);
+    order.qty -= quantity;
+  }
+
+  refresh();
+  return true;
+}
+
+template <class Book>
+bool NasdaqBookParser<Book>::remove(uint64_t ref) {
+  auto it = book_.orders.find(ref);
+  if (it == book_.orders.end()) {
+    onNoRef();
+    return false;
+  }
+  erase_order(it->second);
+  refresh();
+  return true;
+}
+
+template <class Book>
+bool NasdaqBookParser<Book>::replace(const Replace& rep) {
+  auto it = book_.orders.find(rep.old_ref);
+  if (it == book_.orders.end()) {
+    onNoRef();
+    return false;
+  }
+
+  const char side = it->second.side;
   erase_order(it->second);
 
-  AddOrder new_order{};
-  new_order.ref = rep.new_ref;
-  new_order.side = side;
-  new_order.price_ticks = static_cast<uint64_t>(rep.price);
-  new_order.shares = rep.shares;
-
-  return this->add(new_order);
+  AddOrder a{};
+  a.ref = rep.new_ref;
+  a.side = side;
+  a.price_ticks = static_cast<uint64_t>(rep.price);
+  a.shares = rep.shares;
+  return add(a);
 }
 
-Depth NasdaqBookParser::depth(size_t n) const {
+template <class Book>
+Depth NasdaqBookParser<Book>::depth(size_t n) const {
   Depth d;
-
-  d.asks.reserve(n);
   d.bids.reserve(n);
-
-  for(auto it = book_.bids.rbegin(); it != book_.bids.rend() && d.bids.size() < n; ++it) {
-    d.bids.push_back({
-        it->first,
-        it->second.total,
-        it->second.count
-        });
-  }
-
-  for(auto it = book_.asks.begin(); it != book_.asks.end() && d.asks.size() < n; ++it) {
-    d.asks.push_back({
-        it->first,
-        it->second.total,
-        it->second.count
-        });
-  }
-
+  d.asks.reserve(n);
+  book_.top('B', n, d.bids);
+  book_.top('S', n, d.asks);
   return d;
 }
+
+// Instantiate the one body for both books.
+template class NasdaqBookParser<NasdqBook>;
+template class NasdaqBookParser<NasdqBookWithLadder>;

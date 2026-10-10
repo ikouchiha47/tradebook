@@ -17,7 +17,7 @@ static AddOrder mk(uint64_t ref, char side, uint32_t shares, uint64_t price_tick
 
 // Real: A ref=539 side=S shares=11100 price=44100 ($4.41). Ask side.
 TEST(Book, AddPutsOrderOnBook) {
-  NasdaqBookParser b;
+  NasdaqBookParser<NasdqBook> b(NasdqBook{});
   EXPECT_TRUE(b.add(mk(539, 'S', 11100, 44100)));
   TopOfBook t = b.best();
   EXPECT_EQ(t.ask_px, 44100);
@@ -27,7 +27,7 @@ TEST(Book, AddPutsOrderOnBook) {
 
 // Real: ref=539 gets E(200), E(300), then D.
 TEST(Book, ReducePartialThenRemove) {
-  NasdaqBookParser b;
+  NasdaqBookParser<NasdqBook> b(NasdqBook{});
   b.add(mk(539, 'S', 11100, 44100));
 
   EXPECT_TRUE(b.reduce(539, 200));  // E #1
@@ -43,7 +43,7 @@ TEST(Book, ReducePartialThenRemove) {
 
 // Real: A ref=467 side=B shares=200 price=488400 ($48.84), X(100), then D.
 TEST(Book, CancelThenDelete) {
-  NasdaqBookParser b;
+  NasdaqBookParser<NasdqBook> b(NasdqBook{});
   b.add(mk(467, 'B', 200, 488400));
   EXPECT_EQ(b.best().bid_px, 488400);
   EXPECT_EQ(b.best().bid_sz, 200u);
@@ -57,7 +57,7 @@ TEST(Book, CancelThenDelete) {
 
 // Real U: old=951 (A: S,300,641500) -> new=8407 shares=300 price=641600.
 TEST(Book, ReplaceKillsOldFilesNew) {
-  NasdaqBookParser b;
+  NasdaqBookParser<NasdqBook> b(NasdqBook{});
   b.add(mk(951, 'S', 300, 641500));
 
   Replace r{};
@@ -76,7 +76,7 @@ TEST(Book, ReplaceKillsOldFilesNew) {
 
 // Unknown refs are counted, not crashed on.
 TEST(Book, UnknownRefCounted) {
-  NasdaqBookParser b;
+  NasdaqBookParser<NasdqBook> b(NasdqBook{});
   EXPECT_FALSE(b.remove(999999));
   EXPECT_FALSE(b.reduce(999998, 10));
   EXPECT_EQ(b.counters().unknown_ref, 2u);
@@ -84,7 +84,7 @@ TEST(Book, UnknownRefCounted) {
 
 // Reducing more than resting clamps (never wraps uint32).
 TEST(Book, OverReduceClamped) {
-  NasdaqBookParser b;
+  NasdaqBookParser<NasdqBook> b(NasdqBook{});
   b.add(mk(1001, 'B', 100, 500000));
   EXPECT_TRUE(b.reduce(1001, 150));  // over-take
   EXPECT_EQ(b.counters().clamped, 1u);
@@ -93,7 +93,7 @@ TEST(Book, OverReduceClamped) {
 
 // A cross (bid >= ask) is counted, not halted.
 TEST(Book, CrossedCounted) {
-  NasdaqBookParser b;
+  NasdaqBookParser<NasdqBook> b(NasdqBook{});
   b.add(mk(1, 'B', 100, 500000));  // bid 500000
   b.add(mk(2, 'S', 100, 499000));  // ask 499000 -> crossed
   EXPECT_EQ(b.counters().crossed, 1u);
@@ -101,7 +101,7 @@ TEST(Book, CrossedCounted) {
 
 // depth() returns rows best-first on both sides.
 TEST(Book, DepthBestFirst) {
-  NasdaqBookParser b;
+  NasdaqBookParser<NasdqBook> b(NasdqBook{});
   b.add(mk(1, 'B', 100, 500000));
   b.add(mk(2, 'B', 50, 499000));
   b.add(mk(3, 'S', 70, 501000));
