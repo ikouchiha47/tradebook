@@ -197,3 +197,75 @@ time. hsdxpro does exactly this (`if best == price { best = last()/first() }`); 
 does it via `level_emptied(idx == cursor_)`. Doing a descent on *every* message (our
 current `refresh()`) is the wasted work this avoids.
 
+## `prev_occupied(slot)` / `next_occupied(slot)` — neighbour queries
+
+`slot` is the anchor slot. The point to hold onto: **`slot` is the one value that gets split
+into the three layers.** The root/summary/leaf indices are just different **bit-slices of
+the same `slot`**:
+
+```
+slot  =  ... [ root digit ][ summary digit ][ leaf digit ]        (base-64 digits, 6 bits each)
+
+leaf    word = slot >> 6          leaf    bit = slot       & 63
+summary word = slot >> 12         summary bit = (slot >> 6)  & 63
+root    word = slot >> 18         root    bit = (slot >> 12) & 63
+```
+
+So `slot` is not "in" one layer — it *decomposes* into all three at once.
+
+### What they return
+```
+prev_occupied(slot) = the highest occupied slot STRICTLY BELOW slot   (or -1)
+next_occupied(slot) = the lowest  occupied slot STRICTLY ABOVE slot   (or -1)
+```
+
+### How — same hierarchy, anchored at `slot`, masked one side
+```
+prev_occupied(slot):
+  1) leaf_[slot>>6] & ((1ull << (slot&63)) - 1)          # bits BELOW slot in its leaf word
+        if != 0  → answer = (slot>>6)*64 + (63 - clz(hit))   # the neighbour slot
+  2) else summary_[slot>>12] & ((1ull << ((slot>>6)&63)) - 1)   # leaf words BELOW, in its summary word
+       if != 0  → highest non-empty leaf word → its top bit
+  3) else root_[slot>>18]   & ((1ull << ((slot>>12)&63)) - 1)   # summary words BELOW, in its root word
+       → its top bit → that summary word's top bit → that leaf word's top bit
+```
+`next_occupied` is the mirror: mask bits **above** (`word & ~((1ull << (bit+1)) - 1)`) and use
+`ctz`, jumping **up** (leaf → summary → root).
+
+### Worked
+Occupied slots **{3, 5, 40, 100, 200}** (64-bit words → one word per 64 slots):
+```
+leaf_[0]=bits{3,5,40}   leaf_[1]=bit{36}  (=100-64)   leaf_[3]=bit{8} (=200-192)
+
+prev_occupied(100):
+  slot=100 : leaf word 1, bit 36
+  1) leaf_[1] & ((1<<36)-1) = 0            # nothing below 100 in word 1
+  2) summary: highest non-empty leaf word < 1 → word 0
+     leaf_[0] top bit = 40  → return 40     ✓
+
+next_occupied(100):
+  slot=100 : leaf word 1, bit 36
+  1) leaf_[1] & ~((1<<37)-1) = 0           # nothing above 100 in word 1
+  2) summary: lowest non-empty leaf word > 1 → word 3
+     leaf_[3] low bit = 8 → return 192+8 = 200   ✓
+```
+
+### Why this is the same machinery as `highest()` / `lowest()`
+```
+highest()          : start at the ROOT  → top set bit → descend
+prev_occupied(slot)  : start at slot's digits → mask below → descend / ascend to the neighbour
+```
+`prev_occupied`/`next_occupied` are `highest()`/`lowest()` **anchored at `slot`** — you re-split
+the anchor into root/summary/leaf coordinates and walk from there. Cost is O(hierarchy)
+(a few word-reads + `clz`/`ctz`), **independent of the gap**.
+
+### Usage
+```
+top()/depth :  best = occ_.highest();  loop { emit(best); best = prev_occupied(best); }
+cursor      :  when the best level empties: best = prev_occupied(old_best)
+             (asks: next_occupied / lowest)
+```
+i.e., `prev/next_occupied` are the occupied→occupied **jump**, used instead of stepping
+`i--`/`i++` through empty slots — which is what makes `top()` flat across dense and sparse.
+
+

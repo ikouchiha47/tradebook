@@ -20,6 +20,8 @@ public:
 
   int highest() const;
   int lowest() const;
+  int prev_occupied(int slot) const;  // highest set slot < slot, or -1
+  int next_occupied(int slot) const;  // lowest  set slot > slot, or -1
 
 
 private:

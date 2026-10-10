@@ -26,20 +26,30 @@ void PriceLadder::sub_share(int64_t px, uint32_t qty) {
   if (l) l->total -= qty;
 }
 
-void PriceLadder::remove_order(int64_t px, uint32_t qty) {
+bool PriceLadder::remove_order(int64_t px, uint32_t qty) {
   if (in_hot(px)) {
     Level& l = hot_[index(px)];
     l.total -= qty;
+
     if (--l.count == 0) {
       occ_.clear(index(px));  // 1 -> 0 occupancy bit
+
       l.total = 0;
+      return true;            // level emptied
     }
-  } else {
-    auto it = cold_.find(px);
-    if (it == cold_.end()) return;
-    it->second.total -= qty;
-    if (--it->second.count == 0) cold_.erase(it);
+
+    return false;
   }
+
+  auto it = cold_.find(px);
+  if (it == cold_.end()) return false;
+
+  it->second.total -= qty;
+  if (--it->second.count == 0) {
+    cold_.erase(it);
+    return true;
+  }
+  return false;
 }
 
 Level* PriceLadder::find(int64_t px) {
@@ -53,37 +63,33 @@ Level* PriceLadder::find(int64_t px) {
 
 int64_t PriceLadder::highest() const {
   int slot = occ_.highest();
+
   int64_t best = (slot < 0) ? 0 : base_ + static_cast<int64_t>(slot) * inc_;
   if (!cold_.empty()) {
     int64_t cp = cold_.rbegin()->first;
     best = (best == 0) ? cp : std::max(best, cp);
   }
+
   return best;
 }
 
 int64_t PriceLadder::lowest() const {
   int slot = occ_.lowest();
+
   int64_t best = (slot < 0) ? 0 : base_ + static_cast<int64_t>(slot) * inc_;
   if (!cold_.empty()) {
     int64_t cp = cold_.begin()->first;
     best = (best == 0) ? cp : std::min(best, cp);
   }
+
   return best;
 }
 
 void PriceLadder::top(bool is_bid, size_t n, std::vector<LevelRow>& out) const {
-  const int s = is_bid ? occ_.highest() : occ_.lowest();  // best occupied slot, O(1)
-  if (s < 0) return;                                      // empty side
-  if (is_bid) {
-    for (size_t i = static_cast<size_t>(s) + 1; i-- > 0 && out.size() < n; ) {
-      if (hot_[i].count)
-        out.push_back({base_ + static_cast<int64_t>(i) * inc_, hot_[i].total, hot_[i].count});
-    }
-  } else {
-    for (size_t i = static_cast<size_t>(s); i < slots_ && out.size() < n; ++i) {
-      if (hot_[i].count)
-        out.push_back({base_ + static_cast<int64_t>(i) * inc_, hot_[i].total, hot_[i].count});
-    }
+  int s = is_bid ? occ_.highest() : occ_.lowest();  // best occupied slot
+  while (s >= 0 && out.size() < n) {
+    out.push_back({base_ + static_cast<int64_t>(s) * inc_, hot_[s].total, hot_[s].count});
+    s = is_bid ? occ_.prev_occupied(s) : occ_.next_occupied(s);  // jump to next occupied
   }
 }
 
@@ -168,8 +174,10 @@ bool NasdaqBookParser<Book>::remove(uint64_t ref) {
     onNoRef();
     return false;
   }
+
   erase_order(it->second);
   refresh();
+
   return true;
 }
 
@@ -189,6 +197,7 @@ bool NasdaqBookParser<Book>::replace(const Replace& rep) {
   a.side = side;
   a.price_ticks = static_cast<uint64_t>(rep.price);
   a.shares = rep.shares;
+
   return add(a);
 }
 
@@ -199,6 +208,7 @@ Depth NasdaqBookParser<Book>::depth(size_t n) const {
   d.asks.reserve(n);
   book_.top('B', n, d.bids);
   book_.top('S', n, d.asks);
+
   return d;
 }
 

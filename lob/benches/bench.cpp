@@ -395,4 +395,101 @@ void BM_BookDepth5Ladder(benchmark::State& s) {
 }
 BENCHMARK(BM_BookDepth5Ladder);
 
+// ===========================================================================
+// Parameterized sweep — map vs ladder over book size (N) and sparsity (gap).
+//   arg0 = levels per side, arg1 = tick gap between levels
+//   (gap 100 = dense/consecutive; 1000/5000 = sparse)
+// ===========================================================================
+NasdaqBookParser<NasdqBook> make_map_sweep(int n, int64_t step) {
+  NasdaqBookParser<NasdqBook> b(NasdqBook{});
+  AddOrder a{};
+  a.shares = 100;
+  a.side = 'B';
+  for (int i = 0; i < n; ++i) {
+    a.ref = 100000 + i;
+    a.price_ticks = static_cast<uint64_t>(5000000 - static_cast<int64_t>(i) * step);
+    b.add(a);
+  }
+  a.side = 'S';
+  for (int i = 0; i < n; ++i) {
+    a.ref = 200000 + i;
+    a.price_ticks = static_cast<uint64_t>(5000100 + static_cast<int64_t>(i) * step);
+    b.add(a);
+  }
+  return b;
+}
+
+NasdaqBookParser<NasdqBookWithLadder> make_ladder_sweep(int n, int64_t step) {
+  const int64_t lo = 5000000 - static_cast<int64_t>(n + 1) * step;
+  const int64_t hi = 5000100 + static_cast<int64_t>(n + 1) * step;
+  const size_t slots = static_cast<size_t>((hi - lo) / 100) + 1;
+  NasdaqBookParser<NasdqBookWithLadder> b(NasdqBookWithLadder(lo, 100, slots));
+  AddOrder a{};
+  a.shares = 100;
+  a.side = 'B';
+  for (int i = 0; i < n; ++i) {
+    a.ref = 100000 + i;
+    a.price_ticks = static_cast<uint64_t>(5000000 - static_cast<int64_t>(i) * step);
+    b.add(a);
+  }
+  a.side = 'S';
+  for (int i = 0; i < n; ++i) {
+    a.ref = 200000 + i;
+    a.price_ticks = static_cast<uint64_t>(5000100 + static_cast<int64_t>(i) * step);
+    b.add(a);
+  }
+  return b;
+}
+
+// new ask price at the top: on-grid, no collision, no crossing
+uint64_t sweep_new_ask(int n, int64_t step) {
+  return static_cast<uint64_t>(5000100 + static_cast<int64_t>(n) * step + 100);
+}
+
+void BM_SweepAddRemoveMap(benchmark::State& s) {
+  const int n = static_cast<int>(s.range(0));
+  const int64_t step = s.range(1);
+  auto book = make_map_sweep(n, step);
+  AddOrder a{};
+  a.side = 'S';
+  a.shares = 100;
+  a.price_ticks = sweep_new_ask(n, step);
+  uint64_t ref = 1;
+  for (auto _ : s) {
+    a.ref = ref++;
+    benchmark::DoNotOptimize(book.add(a));
+    benchmark::DoNotOptimize(book.remove(a.ref));
+  }
+}
+BENCHMARK(BM_SweepAddRemoveMap)->ArgsProduct({{100, 1000, 10000}, {100, 1000, 5000}});
+
+void BM_SweepAddRemoveLadder(benchmark::State& s) {
+  const int n = static_cast<int>(s.range(0));
+  const int64_t step = s.range(1);
+  auto book = make_ladder_sweep(n, step);
+  AddOrder a{};
+  a.side = 'S';
+  a.shares = 100;
+  a.price_ticks = sweep_new_ask(n, step);
+  uint64_t ref = 1;
+  for (auto _ : s) {
+    a.ref = ref++;
+    benchmark::DoNotOptimize(book.add(a));
+    benchmark::DoNotOptimize(book.remove(a.ref));
+  }
+}
+BENCHMARK(BM_SweepAddRemoveLadder)->ArgsProduct({{100, 1000, 10000}, {100, 1000, 5000}});
+
+void BM_SweepDepthMap(benchmark::State& s) {
+  auto book = make_map_sweep(static_cast<int>(s.range(0)), s.range(1));
+  for (auto _ : s) benchmark::DoNotOptimize(book.depth(5));
+}
+BENCHMARK(BM_SweepDepthMap)->ArgsProduct({{100, 1000, 10000}, {100, 1000, 5000}});
+
+void BM_SweepDepthLadder(benchmark::State& s) {
+  auto book = make_ladder_sweep(static_cast<int>(s.range(0)), s.range(1));
+  for (auto _ : s) benchmark::DoNotOptimize(book.depth(5));
+}
+BENCHMARK(BM_SweepDepthLadder)->ArgsProduct({{100, 1000, 10000}, {100, 1000, 5000}});
+
 }  // namespace
