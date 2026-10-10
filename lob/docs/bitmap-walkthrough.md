@@ -131,3 +131,69 @@ Level& lvl = hot_[11];                       // { total, count }
   `clz`'d each, landing straight on slot 11.
 - `lowest()` (best ask) is the mirror on a **separate** bitmap for the other side: scan
   root bottom-up and use `ctz` (lowest set bit) at each level.
+
+## Why rescan only when the best level empties (case-by-case)
+
+Caching the best price is *correct* because the cache goes stale at a **detectable** point:
+the instant the current best level empties. Every other event leaves best unchanged.
+
+Setup for all cases — occupied slots **{3, 5, 11}**, best = **11**, 8-bit words:
+```
+leaf_[0] (slots 0..7)  = 0b00101000    bits set: 3, 5
+leaf_[1] (slots 8..15) = 0b00001000    bit set: 11
+summary_[0]            = 0b00000011    leaf words 0 and 1 non-empty
+root_[0]               = 0b00000001    summary word 0 non-empty
+best_bid_ = occ_.highest() = 11        (cached)
+```
+
+### Case A — add at slot 13 (a *better* price)
+```
+13 > best_bid_(11)  →  best_bid_ = 13          // ONE COMPARE, no descent
+occ_.set(13): 13 → leaf word 1, bit 5 → leaf_[1] |= 1<<5 → 0b00101000
+              leaf_[1] was already non-empty → no summary/root change
+```
+Best updated by comparison. **No rescan.**
+
+### Case B — add at slot 4 (a *worse* price)
+```
+4 < best_bid_(11)   →  best unchanged
+occ_.set(4): leaf_[0] |= 1<<4 → 0b00111000
+```
+**No rescan.**
+
+### Case C — remove slot 5 (NOT the best)
+```
+occ_.clear(5): 5 → leaf word 0, bit 5 → leaf_[0] &= ~(1<<5) → 0b00001000
+leaf_[0] != 0  → no summary change
+the BEST bit (11, in leaf_[1]) was never touched  →  cache still VALID
+                                                                 (best stays 11)
+```
+**No rescan.**
+
+### Case D — remove slot 11 (THE best)
+```
+occ_.clear(11): 11 → leaf word 1, bit 3 → leaf_[1] &= ~(1<<3) → 0b00000000
+leaf_[1] == 0  →  clear summary bit 1: summary_[0] &= ~(1<<1) → 0b00000001
+summary_[0] != 0 → root unchanged
+the BEST bit is now GONE  →  cache STALE  →  rescan:
+  occ_.highest():
+    root_[0]    = 0b00000001  → highest set bit 0 → summary word 0
+    summary_[0] = 0b00000001  → highest set bit 0 → leaf word 0
+    leaf_[0]    = 0b00101000  → highest set bit 5 → slot 5
+  best_bid_ = 5
+```
+**Only here is a rescan needed** — because only here did the bit the cache depended on get
+cleared. (Removing 11 left {3, 5}, so the new best is 5.)
+
+## The rule
+```
+best changes  ⟺  a better level is created  →  compare/update    O(1)
+             OR  the current best level empties →  rescan (descent)  rare
+anything else →  best is already correct, do nothing
+```
+Detect the second case with one check: `if (erasing the best price) rescan();`. The bitmap
+tells you "the best" in O(1) when you *do* need it, and the cache skips it the rest of the
+time. hsdxpro does exactly this (`if best == price { best = last()/first() }`); itchbook
+does it via `level_emptied(idx == cursor_)`. Doing a descent on *every* message (our
+current `refresh()`) is the wasted work this avoids.
+
