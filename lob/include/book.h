@@ -1,6 +1,8 @@
 #pragma once
 #include "feed.h"
 #include "itch.h"
+#include "bitmap.h"
+#include <cstddef>
 #include <cstdint>
 #include <map>
 #include <unordered_map>
@@ -48,6 +50,37 @@ struct Counters {
   uint64_t crossed = 0;
 };
 
+
+class PriceLadder {
+public:
+    explicit PriceLadder() = default;
+    explicit PriceLadder(int64_t base, int64_t inc, size_t slots);
+    Level& at(int64_t px);
+    Level* find(int64_t px);
+
+    void add_order(int64_t px, uint32_t qty);
+    void erase(int64_t px);
+    int64_t highest() const;
+    int64_t lowest() const;
+
+private:
+  int64_t base_, inc_;
+  size_t slots_;
+
+  std::vector<Level> hot_;
+  std::map<int64_t, Level> cold_;
+
+  Occupancy occ_;
+
+  bool in_band(int64_t px) {
+    return px >= base_ && index(px) < slots_;
+  }
+  size_t index(int64_t px) const {
+    return (px - base_) / inc_;
+  };
+};
+
+
 struct NasdqBook {
   std::unordered_map<uint64_t, Order> orders;  // ref → live order (side/price/qty for cancels)
   std::map<int64_t, Level> bids;               // buy-side rows, price → {total, count}
@@ -56,6 +89,17 @@ struct NasdqBook {
   Counters stats{};                              // unknown_ref, clamped, crossed — the REQ-P1-040..042 armor
 
   NasdqBook() = default;
+};
+
+struct NasdqBookWithLadder {
+  std::unordered_map<uint64_t, Order> orders;
+
+  PriceLadder bids;
+  PriceLadder asks;
+  TopOfBook cached{};
+  Counters stats{};
+
+  NasdqBookWithLadder() = default;
 };
 
 class NasdaqBookParser {
@@ -82,3 +126,17 @@ class NasdaqBookParser {
     void onCross() { book_.stats.crossed++; }
 
 };
+
+// There is a choice regarding how to maintain the
+// highest bid and lowest ask
+// 
+// Two ways:
+// - cursor
+// - hierarchical bitmap (behaving like trie)
+//
+// the cursor maintains 2 flags, best_ask and best_bid
+// at every B-id and S-ell
+// rescan's on delete or exits
+// need to walk the array to figure out the right place
+//
+// the bitmap 64bits, 2^6 ~ 6bits

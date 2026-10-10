@@ -1,6 +1,55 @@
 #include "book.h"
 #include "itch.h"
+#include <cstddef>
 #include <cstdint>
+#include <vector>
+
+PriceLadder::PriceLadder(int64_t base, int64_t inc, size_t slots) {
+  base_ = base;
+  inc_ = inc;
+  slots_ = slots;
+
+  hot_ = std::vector<Level>(slots);
+  occ_ = Occupancy(slots);
+}
+
+Level& PriceLadder::at(int64_t px) {
+  int64_t absPrice = px - base_;
+  // save either in hot or cold based on if its mappable
+  if(in_band(px) && absPrice % inc_ == 0) {
+    return hot_[index(px)];
+  }
+
+   // auto it = cold_.find(px);
+
+  return cold_[px]; // apparently this is get or create
+}
+
+Level* PriceLadder::find(int64_t px) {
+  if (in_band(px) && (px - base_) % inc_ == 0) {
+    Level& l = hot_[index(px)];
+    return l.count ? &l : nullptr;         // an all-zero slot = no level
+  }
+
+  auto it = cold_.find(px);
+  return it == cold_.end() ? nullptr : &it->second;
+}
+
+void PriceLadder::erase(int64_t px) {
+  if(in_band(px) && (px - base_) % inc_ == 0) {
+    hot_[index(px)] = Level{};
+  } else {
+    cold_.erase(px);
+  }
+}
+
+int64_t PriceLadder::highest() const {
+
+}
+
+int64_t PriceLadder::lowest() const {
+
+}
 
 NasdaqBookParser::NasdaqBookParser() = default;
 NasdaqBookParser::~NasdaqBookParser() = default;
@@ -66,7 +115,7 @@ bool NasdaqBookParser::add(const AddOrder& new_order) {
   // & .. ref is the object
   // * .. points to the object
   if(order.side == 'B') {
-    lvl = &(book_.bids[order.price]);
+lvl = &(book_.bids[order.price]);
   } else if(order.side == 'S') {
     lvl = &(book_.asks[order.price]);
   }
