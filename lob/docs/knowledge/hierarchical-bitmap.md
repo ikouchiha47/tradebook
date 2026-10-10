@@ -3,6 +3,9 @@
 How a tick-ladder book finds best bid/ask in O(1) without a tree — and how the
 `set`/`clear`/`highest` operations relate.
 
+> See also: `bit-manipulation.md` (the bit primitives + their names/lineage) ·
+> `bitmap-walkthrough.md` (bit-is-a-slot primer + worked `prev_occupied`).
+
 ## Why it exists
 A ladder stores price levels in a contiguous array (fast, cache-friendly), but an array
 can't answer "highest occupied price" for free. A *flat* bitmap (one bit per slot) lets

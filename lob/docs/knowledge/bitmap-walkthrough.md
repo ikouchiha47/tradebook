@@ -4,6 +4,58 @@ A full trace: four orders added to a book, then the best-price walk. **8-bit wor
 readability (`>>3`, `&7`, `*8`); the real code uses 64-bit words (`>>6`, `&63`, `*64`) —
 swap the constants and it's identical.
 
+> Primitives used here (CLZ/CTZ, low-bit masks, one-hot, hierarchical bitmaps) are catalogued
+> with their names/lineage in `bit-manipulation.md`. The layered structure is in
+> `hierarchical-bitmap.md`.
+
+## The one idea: a bit *is* a slot
+
+The bitmap stores no prices — just "is this slot occupied?" as one bit per slot. Slots are
+numbered `0,1,2,…` and laid out in a word **right-to-left**:
+
+```
+bit#   7   6   5   4   3   2   1   0
+       –   –   ▓   –   ▓   ▓   –   –      ▓ = occupied slot
+slot   7   6   5   4   3   2   1   0
+```
+
+Add at slot `s` → set bit `s`: `s & 7` = which bit in the word, `s >> 3` = which word
+(`>>3` is integer ÷8 — "which group of 8"). Example, add slots 2, 3, 5:
+```
+1<<2 = 0b00000100
+1<<3 = 0b00001000
+1<<5 = 0b00100000
+OR   = 0b00101100    → bits {2,3,5} occupied    (as a number: 4+8+32 = 44)
+```
+Read back: bit `n` set ⇔ slot `n` occupied. `remove(s)` clears `1<<(s&7)`.
+
+## The three tiers — a bit means "my child is non-empty"
+
+After adding slots **2, 3, 5, 11** (`11 = 8+3` → word 1, bit 3):
+```
+root_[0]    = 0b00000001   bit0 → summary word 0 is non-empty
+  summary_[0] = 0b00000011   bit0 → leaf word 0 non-empty
+                             bit1 → leaf word 1 non-empty
+    leaf_[0]  = 0b00101100  → slots {2,3,5}
+    leaf_[1]  = 0b00001000  → slot  {11}
+```
+
+## prev_occupied(11) — two steps
+
+"Biggest occupied slot strictly below 11."  (11 → root 0, summary 1, leaf 3)
+```
+Step 1  — its own leaf word: hide bit 3 and everything above
+    leaf_[1] & ((1<<3)-1) = 0b00001000 & 0b00000111 = 0            → empty → climb
+
+Step 2  — the summary word: hide bit 1 and above
+    summary_[0] & ((1<<1)-1) = 0b00000011 & 0b00000001 = 0b00000001   → bit 0
+    → nearest non-empty leaf word below = leaf_[0] → its highest bit = 5
+    prev_occupied(11) = 5   ✓
+```
+Inside a word it's one `AND` + highest-bit (`clz`); when that comes up empty you climb one
+tier and repeat — that's the "jump" (no slot-by-slot walk). `prev_occupied(5)` stops at
+step 1: `0b00101100 & 0b00011111 = bits {2,3}` → `3`.
+
 ## Setup
 ```
 base = $100.00   (raw 1,000,000)

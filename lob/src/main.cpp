@@ -1,8 +1,10 @@
 // lob-replay: replay ITCH 5.0 through parsers + order book for ONE symbol.
 // Book has no locate dimension, so we filter to a single symbol (auto-picked
-// from the first A/F unless --locate is given).
+// from the first A/F unless --locate is given). Book type is selectable:
+//   --book ladder (default) | map
 #include <algorithm>
 #include <chrono>
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <span>
@@ -19,34 +21,31 @@ constexpr uint64_t kNoLocate = UINT64_MAX;
 inline std::span<const uint8_t> body(const NasdaqRawMsg& m) {
   return std::span<const uint8_t>(m.payload.data(), m.len);
 }
+
+struct Options {
+  std::string path = "../07302019.NASDAQ_ITCH50.gz";
+  uint64_t limit = 0;           // 0 = whole file
+  uint64_t stats_every = 0;     // 0 = off
+  uint64_t target = kNoLocate;  // single-symbol filter
+  bool latency = false;         // per-message percentile report
+  bool stages = false;          // read-vs-route stage split
+  std::string book = "ladder";  // "ladder" | "map"
+  int64_t ladder_base = 0;      // raw ticks (dollars x 10000)
+  int64_t ladder_inc = 100;     // 100 raw ticks = 1 cent per slot
+  size_t ladder_slots = 200000; // covers [base, base + slots*inc) = $0 .. $2000
+};
 }  // namespace
 
-int main(int argc, char** argv) {
-  std::string path = "../07302019.NASDAQ_ITCH50.gz";
-  uint64_t limit = 0;            // 0 = whole file
-  uint64_t stats_every = 0;      // 0 = off
-  uint64_t target = kNoLocate;   // single-symbol filter
-  bool latency = false;          // per-message percentile report
-  bool stages = false;           // read-vs-route stage split
-
-  for (int i = 1; i < argc; ++i) {
-    std::string a = argv[i];
-    if (a == "--file" && i + 1 < argc) path = argv[++i];
-    else if (a == "--limit" && i + 1 < argc) limit = std::stoull(argv[++i]);
-    else if (a == "--locate" && i + 1 < argc) target = std::stoull(argv[++i]);
-    else if (a == "--stats-every" && i + 1 < argc) stats_every = std::stoull(argv[++i]);
-    else if (a == "--latency") latency = true;
-    else if (a == "--stages") stages = true;
-  }
-
-  FeedReader feed(path);
+template <class Book>
+static int run_replay(const Options& o, Book book) {
+  FeedReader feed(o.path);
   if (!feed.open_ok()) {
-    std::fprintf(stderr, "FAIL: cannot open %s\n", path.c_str());
+    std::fprintf(stderr, "FAIL: cannot open %s\n", o.path.c_str());
     return 1;
   }
 
   NasdaqRawMsg m;
-  NasdaqBookParser<NasdqBook> book(NasdqBook{});
+  uint64_t target = o.target;  // mutable: auto-picked from the first A/F
   std::unordered_map<uint16_t, std::string> sym;  // locate -> symbol (from R)
 
   uint64_t n = 0;              // messages read
@@ -71,12 +70,12 @@ int main(int argc, char** argv) {
   const auto t0 = std::chrono::steady_clock::now();
   while (feed.next(m)) {
     const auto t_read = std::chrono::steady_clock::now();
-    if (stages) {
+    if (o.stages) {
       read_ns += static_cast<uint64_t>(
           std::chrono::duration_cast<std::chrono::nanoseconds>(t_read - t_stage_prev).count());
     }
     ++n;
-    if (limit && n > limit) break;
+    if (o.limit && n > o.limit) break;
     payload_bytes += m.len;
 
     switch (m.type) {
@@ -117,8 +116,8 @@ int main(int argc, char** argv) {
         bool ok = parsers::nasdaq::parse_C(body(m), c);
         if (!ok) { on_parse_error('C'); break; }
 
-        if (m.locate == target) { 
-          book.reduce(c.ref, c.shares); 
+        if (m.locate == target) {
+          book.reduce(c.ref, c.shares);
           ++applied;
         }
 
@@ -129,9 +128,9 @@ int main(int argc, char** argv) {
         bool ok = parsers::nasdaq::parse_X(body(m), x);
         if (!ok) { on_parse_error('X'); break; }
 
-        if (m.locate == target) { 
+        if (m.locate == target) {
           book.reduce(x.ref, x.shares);
-          ++applied; 
+          ++applied;
         }
 
         break;
@@ -156,7 +155,7 @@ int main(int argc, char** argv) {
         break;
     }
 
-    if (stats_every && n % stats_every == 0) {
+    if (o.stats_every && n % o.stats_every == 0) {
       TopOfBook t = book.best();
       std::printf("n=%llu applied=%llu  bid=%lld x %u  ask=%lld x %u\n",
                   (unsigned long long)n, (unsigned long long)applied,
@@ -164,7 +163,7 @@ int main(int argc, char** argv) {
                   (long long)t.ask_px, t.ask_sz);
     }
 
-    if (latency) {  // interval = route work + one timer call (see note)
+    if (o.latency) {  // interval = route work + one timer call (see note)
       const auto now = std::chrono::steady_clock::now();
       if (samples.size() < kSampleCap) {
         samples.push_back(static_cast<uint32_t>(
@@ -173,7 +172,7 @@ int main(int argc, char** argv) {
       t_prev = now;
     }
 
-    if (stages) {
+    if (o.stages) {
       const auto t_route = std::chrono::steady_clock::now();
       route_ns += static_cast<uint64_t>(
           std::chrono::duration_cast<std::chrono::nanoseconds>(t_route - t_read).count());
@@ -188,6 +187,12 @@ int main(int argc, char** argv) {
 
   const double secs =
       std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
+  std::printf("book=%s", o.book.c_str());
+  if (o.book == "ladder") {
+    std::printf(" base=%lld inc=%lld slots=%zu", (long long)o.ladder_base,
+                (long long)o.ladder_inc, o.ladder_slots);
+  }
+  std::printf("\n");
   std::printf("elapsed=%.3fs  msgs/s=%.2fM  payload=%.1fMB  MB/s=%.1f\n",
               secs, static_cast<double>(n) / 1e6 / secs,
               static_cast<double>(payload_bytes) / 1e6,
@@ -202,14 +207,14 @@ int main(int argc, char** argv) {
               (unsigned long long)c.unknown_ref, (unsigned long long)c.clamped,
               (unsigned long long)c.crossed, (unsigned long long)parse_errs);
 
-  if (stages && (read_ns + route_ns) > 0) {
+  if (o.stages && (read_ns + route_ns) > 0) {
     const double total_ns = static_cast<double>(read_ns + route_ns);
     std::printf("stages: read=%.3fs (%.0f%%)  route=%.3fs (%.0f%%)  [+2 clock calls/msg overhead]\n",
                 static_cast<double>(read_ns) / 1e9, 100.0 * read_ns / total_ns,
                 static_cast<double>(route_ns) / 1e9, 100.0 * route_ns / total_ns);
   }
 
-  if (latency && !samples.empty()) {
+  if (o.latency && !samples.empty()) {
     std::sort(samples.begin(), samples.end());
     const auto pct = [&](double p) -> uint32_t {
       const size_t idx = static_cast<size_t>((p / 100.0) * (samples.size() - 1));
@@ -223,4 +228,29 @@ int main(int argc, char** argv) {
     std::printf("(per-message interval includes one steady_clock::now() call; ingest->book scope)\n");
   }
   return 0;
+}
+
+int main(int argc, char** argv) {
+  Options o;
+
+  for (int i = 1; i < argc; ++i) {
+    std::string a = argv[i];
+    if (a == "--file" && i + 1 < argc) o.path = argv[++i];
+    else if (a == "--limit" && i + 1 < argc) o.limit = std::stoull(argv[++i]);
+    else if (a == "--locate" && i + 1 < argc) o.target = std::stoull(argv[++i]);
+    else if (a == "--stats-every" && i + 1 < argc) o.stats_every = std::stoull(argv[++i]);
+    else if (a == "--latency") o.latency = true;
+    else if (a == "--stages") o.stages = true;
+    else if (a == "--book" && i + 1 < argc) o.book = argv[++i];
+    else if (a == "--ladder-base" && i + 1 < argc) o.ladder_base = std::stoll(argv[++i]);
+    else if (a == "--ladder-inc" && i + 1 < argc) o.ladder_inc = std::stoll(argv[++i]);
+    else if (a == "--ladder-slots" && i + 1 < argc) o.ladder_slots = std::stoull(argv[++i]);
+  }
+
+  if (o.book == "ladder") {
+    return run_replay(
+        o, NasdaqBookParser<NasdqBookWithLadder>(
+               NasdqBookWithLadder(o.ladder_base, o.ladder_inc, o.ladder_slots)));
+  }
+  return run_replay(o, NasdaqBookParser<NasdqBook>(NasdqBook{}));
 }
