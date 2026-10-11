@@ -492,4 +492,54 @@ void BM_SweepDepthLadder(benchmark::State& s) {
 }
 BENCHMARK(BM_SweepDepthLadder)->ArgsProduct({{100, 1000, 10000}, {100, 1000, 5000}});
 
+// ===========================================================================
+// Dense SCALE sweep — push the working set past L1 (64 KB) and L2 (M4 ~16 MB)
+// so the tree's lines start missing. gap = 100 (consecutive slots).
+//   map  :   N nodes  x ~48 B   (+ 2 allocators)
+//   ladder:  ~2N slots x 8 B     (+ bitmap)
+// ===========================================================================
+void BM_ScaleDepthMap(benchmark::State& s) {
+  auto book = make_map_sweep(static_cast<int>(s.range(0)), 100);
+  for (auto _ : s) benchmark::DoNotOptimize(book.depth(5));
+}
+BENCHMARK(BM_ScaleDepthMap)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000);
+
+void BM_ScaleDepthLadder(benchmark::State& s) {
+  auto book = make_ladder_sweep(static_cast<int>(s.range(0)), 100);
+  for (auto _ : s) benchmark::DoNotOptimize(book.depth(5));
+}
+BENCHMARK(BM_ScaleDepthLadder)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000);
+
+void BM_ScaleAddRemoveMap(benchmark::State& s) {
+  const int n = static_cast<int>(s.range(0));
+  auto book = make_map_sweep(n, 100);
+  AddOrder a{};
+  a.side = 'S';
+  a.shares = 100;
+  a.price_ticks = sweep_new_ask(n, 100);
+  uint64_t ref = 1;
+  for (auto _ : s) {
+    a.ref = ref++;
+    benchmark::DoNotOptimize(book.add(a));
+    benchmark::DoNotOptimize(book.remove(a.ref));
+  }
+}
+BENCHMARK(BM_ScaleAddRemoveMap)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000);
+
+void BM_ScaleAddRemoveLadder(benchmark::State& s) {
+  const int n = static_cast<int>(s.range(0));
+  auto book = make_ladder_sweep(n, 100);
+  AddOrder a{};
+  a.side = 'S';
+  a.shares = 100;
+  a.price_ticks = sweep_new_ask(n, 100);
+  uint64_t ref = 1;
+  for (auto _ : s) {
+    a.ref = ref++;
+    benchmark::DoNotOptimize(book.add(a));
+    benchmark::DoNotOptimize(book.remove(a.ref));
+  }
+}
+BENCHMARK(BM_ScaleAddRemoveLadder)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000);
+
 }  // namespace

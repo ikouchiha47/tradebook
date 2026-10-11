@@ -1,0 +1,233 @@
+Warning: Permanently added '54.226.150.249' (ED25519) to the list of known hosts.
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+== host ==
+aarch64
+cores: 2
+== caches ==
+L1d cache:                               128 KiB (2 instances)
+L1i cache:                               128 KiB (2 instances)
+L2 cache:                                2 MiB (2 instances)
+L3 cache:                                32 MiB (1 instance)
+
+== build ==
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tools/scale_probe.cpp: In function ‘void run(const char*, int, uint64_t, Book)’:
+tools/scale_probe.cpp:87:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   87 |     g_sink += d.bids.size() + d.asks.size();
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp: In instantiation of ‘void run(const char*, int, uint64_t, Book) [with Book = NasdaqBookParser<NasdqBookWithLadder>; uint64_t = long unsigned int]’:
+tools/scale_probe.cpp:110:28:   required from here
+tools/scale_probe.cpp:76:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   76 |     g_sink += book.add(a) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:77:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   77 |     g_sink += book.remove(7) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:87:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   87 |     g_sink += d.bids.size() + d.asks.size();
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp: In instantiation of ‘void run(const char*, int, uint64_t, Book) [with Book = NasdaqBookParser<NasdqBook>; uint64_t = long unsigned int]’:
+tools/scale_probe.cpp:111:28:   required from here
+tools/scale_probe.cpp:76:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   76 |     g_sink += book.add(a) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:77:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   77 |     g_sink += book.remove(7) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:87:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   87 |     g_sink += d.bids.size() + d.asks.size();
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ok: 209904 bytes
+
+== shape (ns, no counters) ==
+map    N=1000     reps=2000000   addremove=  139.6 ns  depth5=  112.5 ns
+sink=24000000
+ladder N=1000     reps=2000000   addremove=   63.3 ns  depth5=  104.0 ns
+sink=24000000
+map    N=100000   reps=2000000   addremove=  401.3 ns  depth5=   96.6 ns
+sink=24000000
+ladder N=100000   reps=2000000   addremove=   66.2 ns  depth5=  102.6 ns
+sink=24000000
+map    N=1000000  reps=2000000   addremove=  604.0 ns  depth5=  114.2 ns
+sink=24000000
+ladder N=1000000  reps=2000000   addremove=   67.4 ns  depth5=  104.8 ns
+sink=24000000
+
+== perf stat (build-only vs build+loop; subtract to get loop counters) ==
+### map N=1000 reps=0
+map    N=1000     reps=0         addremove=    0.0 ns  depth5=    0.0 ns
+           3667854      cycles                                                             
+           6392989      instructions                     #    1.74  insn per cycle         
+           1317891      branches                                                           
+     <not counted>      branch-misses                                                 (0.00%)
+     <not counted>      L1-dcache-load-misses                                         (0.00%)
+   <not supported>      LLC-load-misses                                             
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+       0.000367974 seconds time elapsed
+### map N=1000 reps=5000000
+map    N=1000     reps=5000000   addremove=  139.9 ns  depth5=  112.4 ns
+        3262054389      cycles                                                               (42.84%)
+       12635325779      instructions                     #    3.87  insn per cycle           (43.02%)
+        3128558103      branches                                                             (43.01%)
+             11395      branch-misses                    #    0.00% of all branches          (28.49%)
+             45344      L1-dcache-load-misses                                                (28.50%)
+   <not supported>      LLC-load-misses                                             
+             27044      dTLB-load-misses                                                     (28.49%)
+              6504      iTLB-load-misses                                                     (28.49%)
+       1.263782699 seconds time elapsed
+### ladder N=1000 reps=0
+ladder N=1000     reps=0         addremove=    0.0 ns  depth5=    0.0 ns
+           3320901      cycles                                                               (85.09%)
+           4960977      instructions                     #    1.49  insn per cycle         
+            976393      branches                                                           
+     <not counted>      branch-misses                                                 (0.00%)
+     <not counted>      L1-dcache-load-misses                                         (0.00%)
+   <not supported>      LLC-load-misses                                             
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+       0.001745255 seconds time elapsed
+### ladder N=1000 reps=5000000
+ladder N=1000     reps=5000000   addremove=   63.6 ns  depth5=  100.9 ns
+        2127860627      cycles                                                               (41.76%)
+        8261022249      instructions                     #    3.88  insn per cycle           (41.81%)
+        1616698001      branches                                                             (43.01%)
+              8022      branch-misses                    #    0.00% of all branches          (29.12%)
+             24938      L1-dcache-load-misses                                                (29.13%)
+   <not supported>      LLC-load-misses                                             
+             16836      dTLB-load-misses                                                     (29.07%)
+              4375      iTLB-load-misses                                                     (27.86%)
+       0.824360688 seconds time elapsed
+### map N=1000000 reps=0
+map    N=1000000  reps=0         addremove=    0.0 ns  depth5=    0.0 ns
+        2022838446      cycles                                                               (42.66%)
+        3439657094      instructions                     #    1.70  insn per cycle           (43.94%)
+         814953641      branches                                                             (43.94%)
+           5686014      branch-misses                    #    0.70% of all branches          (28.04%)
+          60364776      L1-dcache-load-misses                                                (28.03%)
+   <not supported>      LLC-load-misses                                             
+         145882024      dTLB-load-misses                                                     (28.02%)
+             18395      iTLB-load-misses                                                     (28.03%)
+       0.790307375 seconds time elapsed
+### map N=1000000 reps=5000000
+map    N=1000000  reps=5000000   addremove=  613.4 ns  depth5=   98.3 ns
+       11240831484      cycles                                                               (42.92%)
+       18416074796      instructions                     #    1.64  insn per cycle           (43.03%)
+        4776204883      branches                                                             (43.04%)
+          12985488      branch-misses                    #    0.27% of all branches          (28.49%)
+         347431511      L1-dcache-load-misses                                                (28.48%)
+   <not supported>      LLC-load-misses                                             
+         725765288      dTLB-load-misses                                                     (28.48%)
+             37138      iTLB-load-misses                                                     (28.48%)
+       4.361093326 seconds time elapsed
+### ladder N=1000000 reps=0
+ladder N=1000000  reps=0         addremove=    0.0 ns  depth5=    0.0 ns
+         362601402      cycles                                                               (43.20%)
+        1369682050      instructions                     #    3.78  insn per cycle           (43.18%)
+         256584646      branches                                                             (43.17%)
+             71494      branch-misses                    #    0.03% of all branches          (28.40%)
+           1987016      L1-dcache-load-misses                                                (28.41%)
+   <not supported>      LLC-load-misses                                             
+            974795      dTLB-load-misses                                                     (28.42%)
+              1614      iTLB-load-misses                                                     (28.42%)
+       0.143614738 seconds time elapsed
+### ladder N=1000000 reps=5000000
+ladder N=1000000  reps=5000000   addremove=   67.6 ns  depth5=  107.0 ns
+        2618426982      cycles                                                               (41.82%)
+        9696635656      instructions                     #    3.70  insn per cycle           (42.81%)
+        1936245764      branches                                                             (43.80%)
+             89887      branch-misses                    #    0.00% of all branches          (29.55%)
+           1971115      L1-dcache-load-misses                                                (28.56%)
+   <not supported>      LLC-load-misses                                             
+           1120338      dTLB-load-misses                                                     (27.64%)
+              4529      iTLB-load-misses                                                     (27.64%)
+       1.015931363 seconds time elapsed
+
+== alloc profile (-DPROBE_COUNT_ALLOCS) ==
+tools/scale_probe.cpp: In function ‘void run(const char*, int, uint64_t, Book)’:
+tools/scale_probe.cpp:87:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   87 |     g_sink += d.bids.size() + d.asks.size();
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp: In instantiation of ‘void run(const char*, int, uint64_t, Book) [with Book = NasdaqBookParser<NasdqBookWithLadder>; uint64_t = long unsigned int]’:
+tools/scale_probe.cpp:110:28:   required from here
+tools/scale_probe.cpp:76:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   76 |     g_sink += book.add(a) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:77:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   77 |     g_sink += book.remove(7) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:87:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   87 |     g_sink += d.bids.size() + d.asks.size();
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp: In instantiation of ‘void run(const char*, int, uint64_t, Book) [with Book = NasdaqBookParser<NasdqBook>; uint64_t = long unsigned int]’:
+tools/scale_probe.cpp:111:28:   required from here
+tools/scale_probe.cpp:76:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   76 |     g_sink += book.add(a) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:77:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   77 |     g_sink += book.remove(7) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:87:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   87 |     g_sink += d.bids.size() + d.asks.size();
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+map    N=1000000  reps=1000000   addremove=  610.4 ns  depth5=  115.9 ns
+        addremove: allocs/op=2.000  bytes/op=88.0   |   depth5: allocs/op=2.000 (160.0 B)
+sink=12000000
+ladder N=1000000  reps=1000000   addremove=   69.3 ns  depth5=  107.8 ns
+        addremove: allocs/op=1.000  bytes/op=40.0   |   depth5: allocs/op=2.000 (160.0 B)
+sink=12000000
+
+== flamegraph (perf record -g --call-graph dwarf) ==
+--- map: top functions ---
+    33.77%  [.] NasdaqBookParser<NasdqBook>::add                                                                                                                                                                                                                                                                                                                                                                                -      -            
+            |
+            ---main
+               __libc_start_call_main
+               0x61ffff8361163b
+               0x61ffff8361163b
+               0x1000000410d6f
+    25.89%  [.] NasdaqBookParser<NasdqBook>::refresh                                                                                                                                                                                                                                                                                                                                                                            -      -            
+            |          
+            |--16.17%--NasdaqBookParser<NasdqBook>::add
+            |          main
+            |          __libc_start_call_main
+            |          0x61ffff8361163b
+            |          0x61ffff8361163b
+            |          0x1000000410d6f
+--- ladder: top functions ---
+    22.83%  [.] NasdaqBookParser<NasdqBookWithLadder>::depth                                                                                                                                                                                                                                                                                                                                                                    -      -            
+            |
+            ---main
+               __libc_start_call_main
+               0x24ffffbe5b163b
+               0x24ffffbe5b163b
+               0x21000000410d6f
+     9.67%  [.] NasdaqBookParser<NasdqBookWithLadder>::refresh                                                                                                                                                                                                                                                                                                                                                                  -      -            
+            |          
+            |--6.39%--NasdaqBookParser<NasdqBookWithLadder>::add
+            |          main
+            |          __libc_start_call_main
+            |          0x24ffffbe5b163b
+            |          0x24ffffbe5b163b
+            |          0x21000000410d6f
+
+== done ==

@@ -1,0 +1,163 @@
+Warning: Permanently added '35.171.84.76' (ED25519) to the list of known hosts.
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+== host ==
+aarch64
+cores: 2
+== caches ==
+L1d cache:                               128 KiB (2 instances)
+L1i cache:                               128 KiB (2 instances)
+L2 cache:                                2 MiB (2 instances)
+L3 cache:                                32 MiB (1 instance)
+
+== build ==
+tools/scale_probe.cpp: In function ‘void run(const char*, int, uint64_t, Book)’:
+tools/scale_probe.cpp:64:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   64 |     g_sink += d.bids.size() + d.asks.size();
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp: In instantiation of ‘void run(const char*, int, uint64_t, Book) [with Book = NasdaqBookParser<NasdqBookWithLadder>; uint64_t = long unsigned int]’:
+tools/scale_probe.cpp:77:28:   required from here
+tools/scale_probe.cpp:56:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   56 |     g_sink += book.add(a) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:57:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   57 |     g_sink += book.remove(7) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:64:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   64 |     g_sink += d.bids.size() + d.asks.size();
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp: In instantiation of ‘void run(const char*, int, uint64_t, Book) [with Book = NasdaqBookParser<NasdqBook>; uint64_t = long unsigned int]’:
+tools/scale_probe.cpp:78:28:   required from here
+tools/scale_probe.cpp:56:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   56 |     g_sink += book.add(a) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:57:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   57 |     g_sink += book.remove(7) ? 1u : 0u;
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/scale_probe.cpp:64:12: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   64 |     g_sink += d.bids.size() + d.asks.size();
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ok: 209904 bytes
+
+== shape (ns, no counters) ==
+map    N=1000     reps=2000000   addremove=  139.2 ns  depth5=  113.0 ns
+sink=24000000
+ladder N=1000     reps=2000000   addremove=   63.2 ns  depth5=  100.4 ns
+sink=24000000
+map    N=100000   reps=2000000   addremove=  437.6 ns  depth5=  112.4 ns
+sink=24000000
+ladder N=100000   reps=2000000   addremove=   66.1 ns  depth5=  102.7 ns
+sink=24000000
+map    N=1000000  reps=2000000   addremove=  607.9 ns  depth5=  113.9 ns
+sink=24000000
+ladder N=1000000  reps=2000000   addremove=   67.4 ns  depth5=  106.8 ns
+sink=24000000
+
+== perf stat (build-only vs build+loop; subtract to get loop counters) ==
+### map N=1000 reps=0
+map    N=1000     reps=0         addremove=    0.0 ns  depth5=    0.0 ns
+           3759438      cycles                                                             
+           6389558      instructions                     #    1.70  insn per cycle         
+           1317561      branches                                                           
+     <not counted>      branch-misses                                                 (0.00%)
+     <not counted>      L1-dcache-load-misses                                         (0.00%)
+   <not supported>      LLC-load-misses                                             
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+       0.002120712 seconds time elapsed
+### map N=1000 reps=5000000
+map    N=1000     reps=5000000   addremove=  139.8 ns  depth5=   93.2 ns
+        3014220202      cycles                                                               (41.74%)
+       12599278706      instructions                     #    4.18  insn per cycle           (42.04%)
+        3117942892      branches                                                             (42.90%)
+             11334      branch-misses                    #    0.00% of all branches          (29.14%)
+             36514      L1-dcache-load-misses                                                (29.14%)
+   <not supported>      LLC-load-misses                                             
+             26759      dTLB-load-misses                                                     (28.82%)
+              5866      iTLB-load-misses                                                     (27.96%)
+       1.167225466 seconds time elapsed
+### ladder N=1000 reps=0
+ladder N=1000     reps=0         addremove=    0.0 ns  depth5=    0.0 ns
+           3096464      cycles                                                             
+           4985761      instructions                     #    1.61  insn per cycle         
+            980588      branches                                                           
+     <not counted>      branch-misses                                                 (0.00%)
+     <not counted>      L1-dcache-load-misses                                         (0.00%)
+   <not supported>      LLC-load-misses                                             
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+       0.001892432 seconds time elapsed
+### ladder N=1000 reps=5000000
+ladder N=1000     reps=5000000   addremove=   63.6 ns  depth5=  101.9 ns
+        2139245082      cycles                                                               (42.07%)
+        8263207191      instructions                     #    3.86  insn per cycle           (42.09%)
+        1617302543      branches                                                             (42.41%)
+             15678      branch-misses                    #    0.00% of all branches          (28.96%)
+             30492      L1-dcache-load-misses                                                (28.96%)
+   <not supported>      LLC-load-misses                                             
+             16247      dTLB-load-misses                                                     (28.95%)
+              4387      iTLB-load-misses                                                     (28.63%)
+       0.829169522 seconds time elapsed
+### map N=1000000 reps=0
+map    N=1000000  reps=0         addremove=    0.0 ns  depth5=    0.0 ns
+        2058831790      cycles                                                               (42.11%)
+        3151980321      instructions                     #    1.53  insn per cycle           (43.29%)
+         828488098      branches                                                             (44.46%)
+           5388445      branch-misses                    #    0.65% of all branches          (29.15%)
+          67001331      L1-dcache-load-misses                                                (27.98%)
+   <not supported>      LLC-load-misses                                             
+         145361097      dTLB-load-misses                                                     (27.56%)
+             20445      iTLB-load-misses                                                     (27.56%)
+       0.805736442 seconds time elapsed
+### map N=1000000 reps=5000000
+map    N=1000000  reps=5000000   addremove=  631.5 ns  depth5=   92.5 ns
+       11370728692      cycles                                                               (42.82%)
+       18315995208      instructions                     #    1.61  insn per cycle           (42.82%)
+        4773943337      branches                                                             (42.82%)
+          12538280      branch-misses                    #    0.26% of all branches          (28.57%)
+         339431445      L1-dcache-load-misses                                                (28.57%)
+   <not supported>      LLC-load-misses                                             
+         735051600      dTLB-load-misses                                                     (28.61%)
+             33711      iTLB-load-misses                                                     (28.61%)
+       4.414424672 seconds time elapsed
+### ladder N=1000000 reps=0
+ladder N=1000000  reps=0         addremove=    0.0 ns  depth5=    0.0 ns
+         364032970      cycles                                                               (43.37%)
+        1344128429      instructions                     #    3.69  insn per cycle           (43.36%)
+         248830395      branches                                                             (43.34%)
+             72316      branch-misses                    #    0.03% of all branches          (28.31%)
+           1985887      L1-dcache-load-misses                                                (28.32%)
+   <not supported>      LLC-load-misses                                             
+            978418      dTLB-load-misses                                                     (28.33%)
+              1687      iTLB-load-misses                                                     (28.33%)
+       0.143913077 seconds time elapsed
+### ladder N=1000000 reps=5000000
+ladder N=1000000  reps=5000000   addremove=   67.7 ns  depth5=  104.8 ns
+        2589985371      cycles                                                               (42.59%)
+        9773291433      instructions                     #    3.77  insn per cycle           (43.59%)
+        1953993843      branches                                                             (44.10%)
+             84359      branch-misses                    #    0.00% of all branches          (28.46%)
+           2050464      L1-dcache-load-misses                                                (27.95%)
+   <not supported>      LLC-load-misses                                             
+           1040167      dTLB-load-misses                                                     (27.95%)
+              4053      iTLB-load-misses                                                     (27.95%)
+       1.004686615 seconds time elapsed
+
+== done ==
