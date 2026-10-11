@@ -90,18 +90,27 @@ struct NasdqBook {
   TopOfBook cached{};
   Counters stats{};
   int64_t best_bid_ = 0, best_ask_ = 0;  // cached; rescan only when the best empties
+  uint32_t best_bid_sz_ = 0, best_ask_sz_ = 0;  // cached size of the best level
 
   void add_order(int64_t px, char side, uint32_t qty) {
     Level& l = (side == 'B') ? bids[px] : asks[px];
     l.total += qty;
     l.count += 1;
-    if (side == 'B') { if (px > best_bid_) best_bid_ = px; }
-    else             { if (best_ask_ == 0 || px < best_ask_) best_ask_ = px; }
+    if (side == 'B') {
+      if (px > best_bid_)      { best_bid_ = px; best_bid_sz_ = qty; }
+      else if (px == best_bid_) best_bid_sz_ = l.total;
+    } else {
+      if (best_ask_ == 0 || px < best_ask_) { best_ask_ = px; best_ask_sz_ = qty; }
+      else if (px == best_ask_)             best_ask_sz_ = l.total;
+    }
   }
   void sub_share(int64_t px, char side, uint32_t qty) {
     auto& m = (side == 'B') ? bids : asks;
     auto it = m.find(px);
-    if (it != m.end()) it->second.total -= qty;  // level still rests: best unchanged
+    if (it == m.end()) return;
+    it->second.total -= qty;                          // level still rests: best unchanged
+    if (side == 'B' && px == best_bid_) best_bid_sz_ = it->second.total;
+    if (side == 'S' && px == best_ask_) best_ask_sz_ = it->second.total;
   }
   void remove_order(int64_t px, char side, uint32_t qty) {
     auto& m = (side == 'B') ? bids : asks;
@@ -110,8 +119,17 @@ struct NasdqBook {
     it->second.total -= qty;
     if (--it->second.count == 0) {
       m.erase(it);
-      if (side == 'B' && px == best_bid_) best_bid_ = bids.empty() ? 0 : bids.rbegin()->first;
-      if (side == 'S' && px == best_ask_) best_ask_ = asks.empty() ? 0 : asks.begin()->first;
+      if (side == 'B' && px == best_bid_) {
+        best_bid_ = bids.empty() ? 0 : bids.rbegin()->first;
+        best_bid_sz_ = bids.empty() ? 0 : bids.rbegin()->second.total;
+      }
+      if (side == 'S' && px == best_ask_) {
+        best_ask_ = asks.empty() ? 0 : asks.begin()->first;
+        best_ask_sz_ = asks.empty() ? 0 : asks.begin()->second.total;
+      }
+    } else {
+      if (side == 'B' && px == best_bid_) best_bid_sz_ = it->second.total;
+      if (side == 'S' && px == best_ask_) best_ask_sz_ = it->second.total;
     }
   }
   Level* find_level(int64_t px, char side) {
@@ -121,6 +139,8 @@ struct NasdqBook {
   }
   int64_t best_bid() const { return best_bid_; }
   int64_t best_ask() const { return best_ask_; }
+  uint32_t best_bid_sz() const { return best_bid_sz_; }
+  uint32_t best_ask_sz() const { return best_ask_sz_; }
   void top(char side, size_t n, std::vector<LevelRow>& out) const {
     if (side == 'B') {
       for (auto it = bids.rbegin(); it != bids.rend() && out.size() < n; ++it)
@@ -141,24 +161,48 @@ struct NasdqBookWithLadder {
   TopOfBook cached{};
   Counters stats{};
   int64_t best_bid_ = 0, best_ask_ = 0;  // cached; rescan only when the best empties
+  uint32_t best_bid_sz_ = 0, best_ask_sz_ = 0;  // cached size of the best level
 
   NasdqBookWithLadder(int64_t base, int64_t inc, size_t slots)
       : bids(base, inc, slots), asks(base, inc, slots) {}
 
   void add_order(int64_t px, char side, uint32_t qty) {
     ladder(side).add_order(px, qty);
-    if (side == 'B') { if (px > best_bid_) best_bid_ = px; }
-    else             { if (best_ask_ == 0 || px < best_ask_) best_ask_ = px; }
+    if (side == 'B') {
+      if (px > best_bid_)      { best_bid_ = px; best_bid_sz_ = qty; }
+      else if (px == best_bid_) best_bid_sz_ += qty;
+    } else {
+      if (best_ask_ == 0 || px < best_ask_) { best_ask_ = px; best_ask_sz_ = qty; }
+      else if (px == best_ask_)             best_ask_sz_ += qty;
+    }
   }
-  void sub_share(int64_t px, char side, uint32_t qty) { ladder(side).sub_share(px, qty); }
+  void sub_share(int64_t px, char side, uint32_t qty) {
+    ladder(side).sub_share(px, qty);
+    if (side == 'B' && px == best_bid_) best_bid_sz_ -= qty;
+    if (side == 'S' && px == best_ask_) best_ask_sz_ -= qty;
+  }
   void remove_order(int64_t px, char side, uint32_t qty) {
-    if (!ladder(side).remove_order(px, qty)) return;  // level still rests: best unchanged
-    if (side == 'B' && px == best_bid_) best_bid_ = bids.highest();  // rescan only here
-    if (side == 'S' && px == best_ask_) best_ask_ = asks.lowest();
+    if (!ladder(side).remove_order(px, qty)) {  // level still rests: best unchanged
+      if (side == 'B' && px == best_bid_) best_bid_sz_ -= qty;
+      if (side == 'S' && px == best_ask_) best_ask_sz_ -= qty;
+      return;
+    }
+    if (side == 'B' && px == best_bid_) {        // best emptied: rescan px + size
+      best_bid_ = bids.highest();
+      Level* l = best_bid_ ? bids.find(best_bid_) : nullptr;
+      best_bid_sz_ = l ? l->total : 0;
+    }
+    if (side == 'S' && px == best_ask_) {
+      best_ask_ = asks.lowest();
+      Level* l = best_ask_ ? asks.find(best_ask_) : nullptr;
+      best_ask_sz_ = l ? l->total : 0;
+    }
   }
   Level* find_level(int64_t px, char side) { return ladder(side).find(px); }
   int64_t best_bid() const { return best_bid_; }
   int64_t best_ask() const { return best_ask_; }
+  uint32_t best_bid_sz() const { return best_bid_sz_; }
+  uint32_t best_ask_sz() const { return best_ask_sz_; }
   void top(char side, size_t n, std::vector<LevelRow>& out) const {
     if (side == 'B') bids.top(true, n, out);
     else             asks.top(false, n, out);

@@ -185,6 +185,29 @@ rule         a micro-structure win need not move the macro number. Ship the bett
 evidence     scripts/replay-ab.sh; docs/knowledge/optimization-journey.md Step 6
 ```
 
+### 6. Cache the best level's **size** (the flamegraph's find)
+```
+symptom      flamegraph: `refresh` = 26.7% self-CPU (map) / 9.1% (ladder)
+instrument   `perf record` → top functions — the profile named the function
+what it is   refresh() called find_level(best_px, side) on EVERY message to read the
+             best level's *size*; we had cached the best *price*, and the size still
+             resolved per message (tree walk on the map, index+cold_ on the ladder)
+without      per-message find_level
+with         maintain best_bid_sz_/best_ask_sz_ in the Book at the same points the price
+             moves (add: new best = qty, else += qty; sub: −= qty; remove: −= qty, and
+             rescan the size only when the best level empties)
+             → N=1M add/remove:  map 223 → 163 ns (−27%)  ·  ladder 30 → 26 ns (−15%)
+             → real feed: identical best + counters; route 0.158/0.156s (inside the 15%)
+reach it     a flamegraph names the function; if it's a lookup for state you already
+             track the price of, cache that state at the same points
+evidence     tools/scale_probe.cpp; tests Book.CachedBestSizeTracksLevel{Map,Ladder};
+             scripts/aws/fg-arm64-*.svg
+confirmed    after: `refresh` leaves the top functions entirely — map now add 38.1% /
+             erase_order 30.7% (was add 32.6% / refresh 26.7%); ladder depth 27.1% /
+             erase_order 10.3% (was depth 24.3% / refresh 9.1%).
+             ARM N=1M add/remove: map 613 → 336 ns, ladder 68 → 57 ns
+```
+
 ## Where the difference actually lives (measured, not asserted)
 
 Dense scale (BM_Scale* / tools/scale_probe.cpp), add+remove of a new level:

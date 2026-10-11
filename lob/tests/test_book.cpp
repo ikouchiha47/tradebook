@@ -116,3 +116,55 @@ TEST(Book, DepthBestFirst) {
   EXPECT_EQ(d.asks[0].price, 501000);  // lowest first
   EXPECT_EQ(d.asks[1].price, 502000);
 }
+
+// Cached best SIZE tracks the level through add-to-best / better-add / reduce /
+// best-empty rescan / partial-remove / final-empty. (Exercises the refresh() change.)
+static void cached_best_size_sequence(NasdaqBookParser<NasdqBook>& b) {
+  b.add(mk(1, 'B', 100, 500000));
+  b.add(mk(2, 'B', 40, 500000));       // same best level -> size adds
+  EXPECT_EQ(b.best().bid_px, 500000);
+  EXPECT_EQ(b.best().bid_sz, 140u);
+
+  b.add(mk(3, 'B', 10, 501000));       // better price -> new best, size = qty
+  EXPECT_EQ(b.best().bid_px, 501000);
+  EXPECT_EQ(b.best().bid_sz, 10u);
+
+  EXPECT_TRUE(b.reduce(3, 10));        // empties the best -> rescan to 500000 x140
+  EXPECT_EQ(b.best().bid_px, 500000);
+  EXPECT_EQ(b.best().bid_sz, 140u);
+
+  EXPECT_TRUE(b.reduce(1, 30));        // partial reduce on the best level -> 110
+  EXPECT_EQ(b.best().bid_sz, 110u);
+
+  EXPECT_TRUE(b.remove(1));            // remove 70, level still rests -> 40
+  EXPECT_EQ(b.best().bid_sz, 40u);
+
+  EXPECT_TRUE(b.remove(2));            // empties the side -> 0
+  EXPECT_EQ(b.best().bid_px, 0);
+  EXPECT_EQ(b.best().bid_sz, 0u);
+}
+
+TEST(Book, CachedBestSizeTracksLevelMap) {
+  NasdaqBookParser<NasdqBook> b(NasdqBook{});
+  cached_best_size_sequence(b);
+}
+
+TEST(Book, CachedBestSizeTracksLevelLadder) {
+  NasdaqBookParser<NasdqBookWithLadder> b(NasdqBookWithLadder(0, 100, 6000));
+  b.add(mk(1, 'B', 100, 500000));
+  b.add(mk(2, 'B', 40, 500000));
+  EXPECT_EQ(b.best().bid_sz, 140u);
+  b.add(mk(3, 'B', 10, 501000));
+  EXPECT_EQ(b.best().bid_px, 501000);
+  EXPECT_EQ(b.best().bid_sz, 10u);
+  EXPECT_TRUE(b.reduce(3, 10));
+  EXPECT_EQ(b.best().bid_px, 500000);
+  EXPECT_EQ(b.best().bid_sz, 140u);
+  EXPECT_TRUE(b.reduce(1, 30));
+  EXPECT_EQ(b.best().bid_sz, 110u);
+  EXPECT_TRUE(b.remove(1));
+  EXPECT_EQ(b.best().bid_sz, 40u);
+  EXPECT_TRUE(b.remove(2));
+  EXPECT_EQ(b.best().bid_px, 0);
+  EXPECT_EQ(b.best().bid_sz, 0u);
+}

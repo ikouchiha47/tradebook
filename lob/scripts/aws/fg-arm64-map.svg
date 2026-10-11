@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" width="1200" height="534" onload="init(evt)" viewBox="0 0 1200 534" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg version="1.1" width="1200" height="566" onload="init(evt)" viewBox="0 0 1200 566" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <!-- Flame graph stack visualization. See https://github.com/brendangregg/FlameGraph for latest version, and http://www.brendangregg.com/flamegraphs.html for examples. -->
 <!-- NOTES:  -->
 <defs>
@@ -422,881 +422,765 @@
 	}
 ]]>
 </script>
-<rect x="0.0" y="0" width="1200.0" height="534.0" fill="url(#background)"  />
+<rect x="0.0" y="0" width="1200.0" height="566.0" fill="url(#background)"  />
 <text id="title" x="600.00" y="24" >scale_probe map N=1M</text>
-<text id="details" x="10.00" y="517" > </text>
+<text id="details" x="10.00" y="549" > </text>
 <text id="unzoom" x="10.00" y="24" class="hide">Reset Zoom</text>
 <text id="search" x="1090.00" y="24" >Search</text>
 <text id="ignorecase" x="1174.00" y="24" >ic</text>
-<text id="matched" x="1090.00" y="517" > </text>
+<text id="matched" x="1090.00" y="549" > </text>
 <g id="frames">
 <g >
-<title>[unknown] (33,056,025 samples, 0.42%)</title><rect x="1160.0" y="405" width="5.0" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1163.02" y="415.5" ></text>
+<title>operator new (2,555,517 samples, 0.05%)</title><rect x="822.4" y="373" width="0.6" height="15.0" fill="rgb(216,51,12)" rx="2" ry="2" />
+<text  x="825.38" y="383.5" ></text>
 </g>
 <g >
-<title>el0t_64_sync (5,023,823 samples, 0.06%)</title><rect x="10.0" y="293" width="0.8" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
-<text  x="13.00" y="303.5" ></text>
+<title>all (5,055,064,243 samples, 100%)</title><rect x="10.0" y="517" width="1180.0" height="15.0" fill="rgb(213,39,9)" rx="2" ry="2" />
+<text  x="13.00" y="527.5" ></text>
 </g>
 <g >
-<title>std::_Rb_tree_increment (38,274,061 samples, 0.49%)</title><rect x="827.9" y="357" width="5.8" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
-<text  x="830.91" y="367.5" ></text>
+<title>__GI___libc_malloc (99,537,821 samples, 1.97%)</title><rect x="62.1" y="389" width="23.2" height="15.0" fill="rgb(219,68,16)" rx="2" ry="2" />
+<text  x="65.06" y="399.5" >_..</text>
 </g>
 <g >
-<title>vma_expand (2,541,248 samples, 0.03%)</title><rect x="10.4" y="133" width="0.4" height="15.0" fill="rgb(222,80,19)" rx="2" ry="2" />
-<text  x="13.38" y="143.5" ></text>
+<title>std::vector&lt;LevelRow, std::allocator&lt;LevelRow&gt; &gt;::reserve (5,095,011 samples, 0.10%)</title><rect x="1153.7" y="453" width="1.2" height="15.0" fill="rgb(222,79,19)" rx="2" ry="2" />
+<text  x="1156.72" y="463.5" ></text>
 </g>
 <g >
-<title>[unknown] (214,290,619 samples, 2.75%)</title><rect x="10.0" y="405" width="32.5" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="13.00" y="415.5" >[u..</text>
+<title>_dl_lookup_symbol_x (1,201,612 samples, 0.02%)</title><rect x="120.4" y="373" width="0.3" height="15.0" fill="rgb(211,28,6)" rx="2" ry="2" />
+<text  x="123.43" y="383.5" ></text>
 </g>
 <g >
-<title>NasdqBook::~NasdqBook (27,978,739 samples, 0.36%)</title><rect x="1154.6" y="373" width="4.3" height="15.0" fill="rgb(248,199,47)" rx="2" ry="2" />
-<text  x="1157.62" y="383.5" ></text>
+<title>[unknown] (7,636,148 samples, 0.15%)</title><rect x="118.6" y="405" width="1.8" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="121.65" y="415.5" ></text>
 </g>
 <g >
-<title>el0t_64_sync_handler (62,509,537 samples, 0.80%)</title><rect x="16.5" y="341" width="9.5" height="15.0" fill="rgb(211,32,7)" rx="2" ry="2" />
-<text  x="19.48" y="351.5" ></text>
+<title>[unknown] (28,003,290 samples, 0.55%)</title><rect x="1140.0" y="437" width="6.6" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="1143.04" y="447.5" ></text>
 </g>
 <g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::add (247,102,956 samples, 3.18%)</title><rect x="10.0" y="453" width="37.5" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
-<text  x="13.00" y="463.5" >Nas..</text>
+<title>mas_walk (2,503,507 samples, 0.05%)</title><rect x="34.4" y="293" width="0.6" height="15.0" fill="rgb(242,170,40)" rx="2" ry="2" />
+<text  x="37.42" y="303.5" ></text>
 </g>
 <g >
-<title>_int_malloc (2,542,346 samples, 0.03%)</title><rect x="37.9" y="373" width="0.4" height="15.0" fill="rgb(215,47,11)" rx="2" ry="2" />
-<text  x="40.87" y="383.5" ></text>
+<title>__handle_mm_fault (49,850,730 samples, 0.99%)</title><rect x="22.2" y="277" width="11.6" height="15.0" fill="rgb(207,9,2)" rx="2" ry="2" />
+<text  x="25.19" y="287.5" ></text>
 </g>
 <g >
-<title>folio_add_lru_vma (2,412,449 samples, 0.03%)</title><rect x="756.0" y="149" width="0.3" height="15.0" fill="rgb(252,216,51)" rx="2" ry="2" />
-<text  x="758.97" y="159.5" ></text>
+<title>std::_Rb_tree_increment@plt (7,636,414 samples, 0.15%)</title><rect x="94.2" y="437" width="1.8" height="15.0" fill="rgb(213,40,9)" rx="2" ry="2" />
+<text  x="97.22" y="447.5" ></text>
 </g>
 <g >
-<title>std::_Rb_tree_rebalance_for_erase (10,200,692 samples, 0.13%)</title><rect x="1042.7" y="341" width="1.6" height="15.0" fill="rgb(205,2,0)" rx="2" ry="2" />
-<text  x="1045.74" y="351.5" ></text>
+<title>std::_Rb_tree_insert_and_rebalance (54,885,276 samples, 1.09%)</title><rect x="660.3" y="373" width="12.9" height="15.0" fill="rgb(225,94,22)" rx="2" ry="2" />
+<text  x="663.35" y="383.5" ></text>
 </g>
 <g >
-<title>do_el0_svc (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="325" width="0.4" height="15.0" fill="rgb(218,60,14)" rx="2" ry="2" />
-<text  x="1190.65" y="335.5" ></text>
+<title>std::_Rb_tree&lt;long, std::pair&lt;long const, Level&gt;, std::_Select1st&lt;std::pair&lt;long const, Level&gt; &gt;, std::less&lt;long&gt;, std::allocator&lt;std::pair&lt;long const, Level&gt; &gt; &gt;::_M_erase (7,645,668 samples, 0.15%)</title><rect x="1137.6" y="373" width="1.8" height="15.0" fill="rgb(253,224,53)" rx="2" ry="2" />
+<text  x="1140.61" y="383.5" ></text>
 </g>
 <g >
-<title>do_translation_fault (10,039,587 samples, 0.13%)</title><rect x="755.2" y="245" width="1.5" height="15.0" fill="rgb(239,158,37)" rx="2" ry="2" />
-<text  x="758.20" y="255.5" ></text>
+<title>[unknown] (97,016,208 samples, 1.92%)</title><rect x="96.0" y="437" width="22.6" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="99.00" y="447.5" >[..</text>
 </g>
 <g >
-<title>vms_clear_ptes.part.0 (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="197" width="0.4" height="15.0" fill="rgb(215,49,11)" rx="2" ry="2" />
-<text  x="1190.65" y="207.5" ></text>
+<title>rmqueue.constprop.0 (2,537,024 samples, 0.05%)</title><rect x="694.5" y="69" width="0.6" height="15.0" fill="rgb(212,33,7)" rx="2" ry="2" />
+<text  x="697.47" y="79.5" ></text>
 </g>
 <g >
-<title>__vma_start_write (2,541,248 samples, 0.03%)</title><rect x="10.4" y="117" width="0.4" height="15.0" fill="rgb(225,96,23)" rx="2" ry="2" />
-<text  x="13.38" y="127.5" ></text>
+<title>unmap_single_vma.constprop.0 (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="197" width="0.6" height="15.0" fill="rgb(211,27,6)" rx="2" ry="2" />
+<text  x="1192.42" y="207.5" ></text>
 </g>
 <g >
-<title>el0t_64_sync (62,509,537 samples, 0.80%)</title><rect x="16.5" y="357" width="9.5" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
-<text  x="19.48" y="367.5" ></text>
+<title>[unknown] (112,303,379 samples, 2.22%)</title><rect x="62.1" y="437" width="26.2" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="65.06" y="447.5" >[..</text>
 </g>
 <g >
-<title>_int_free (79,091,925 samples, 1.02%)</title><rect x="1169.1" y="389" width="12.0" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
-<text  x="1172.07" y="399.5" ></text>
+<title>unmap_vmas (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="213" width="0.6" height="15.0" fill="rgb(243,176,42)" rx="2" ry="2" />
+<text  x="1192.42" y="223.5" ></text>
 </g>
 <g >
-<title>perf_iterate_ctx (2,482,575 samples, 0.03%)</title><rect x="10.0" y="101" width="0.4" height="15.0" fill="rgb(205,4,0)" rx="2" ry="2" />
-<text  x="13.00" y="111.5" ></text>
+<title>operator delete (2,546,395 samples, 0.05%)</title><rect x="1132.3" y="389" width="0.6" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="1135.26" y="399.5" ></text>
 </g>
 <g >
-<title>[unknown] (7,641,212 samples, 0.10%)</title><rect x="1188.1" y="421" width="1.1" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1191.07" y="431.5" ></text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::remove (1,322,387,405 samples, 26.16%)</title><rect x="823.0" y="405" width="308.7" height="15.0" fill="rgb(211,28,6)" rx="2" ry="2" />
+<text  x="825.98" y="415.5" >NasdaqBookParser&lt;NasdqBook&gt;::remove</text>
 </g>
 <g >
-<title>[unknown] (247,102,956 samples, 3.18%)</title><rect x="10.0" y="437" width="37.5" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="13.00" y="447.5" >[un..</text>
+<title>do_mem_abort (57,396,059 samples, 1.14%)</title><rect x="21.6" y="341" width="13.4" height="15.0" fill="rgb(249,206,49)" rx="2" ry="2" />
+<text  x="24.61" y="351.5" ></text>
 </g>
 <g >
-<title>handle_pte_fault (2,383,512 samples, 0.03%)</title><rect x="10.8" y="213" width="0.3" height="15.0" fill="rgb(217,57,13)" rx="2" ry="2" />
-<text  x="13.76" y="223.5" ></text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::depth (145,423,227 samples, 2.88%)</title><rect x="62.1" y="453" width="33.9" height="15.0" fill="rgb(242,173,41)" rx="2" ry="2" />
+<text  x="65.06" y="463.5" >Na..</text>
 </g>
 <g >
-<title>[unknown] (105,211,690 samples, 1.35%)</title><rect x="10.0" y="389" width="16.0" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="13.00" y="399.5" ></text>
+<title>std::_Rb_tree&lt;long, std::pair&lt;long const, Level&gt;, std::_Select1st&lt;std::pair&lt;long const, Level&gt; &gt;, std::less&lt;long&gt;, std::allocator&lt;std::pair&lt;long const, Level&gt; &gt; &gt;::_M_emplace_hint_unique&lt;std::piecewise_construct_t const&amp;, std::tuple&lt;long const&amp;&gt;, std::tuple&lt;&gt; &gt; (10,192,004 samples, 0.20%)</title><rect x="1151.3" y="453" width="2.4" height="15.0" fill="rgb(205,0,0)" rx="2" ry="2" />
+<text  x="1154.34" y="463.5" ></text>
 </g>
 <g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::add (4,304,664,857 samples, 55.33%)</title><rect x="103.9" y="373" width="652.8" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
-<text  x="106.87" y="383.5" >NasdaqBookParser&lt;NasdqBook&gt;::add</text>
+<title>handle_pte_fault (49,850,730 samples, 0.99%)</title><rect x="22.2" y="261" width="11.6" height="15.0" fill="rgb(217,57,13)" rx="2" ry="2" />
+<text  x="25.19" y="271.5" ></text>
 </g>
 <g >
-<title>[unknown] (5,023,823 samples, 0.06%)</title><rect x="10.0" y="357" width="0.8" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="13.00" y="367.5" ></text>
+<title>do_page_fault (7,534,638 samples, 0.15%)</title><rect x="693.3" y="261" width="1.8" height="15.0" fill="rgb(216,54,13)" rx="2" ry="2" />
+<text  x="696.31" y="271.5" ></text>
 </g>
 <g >
-<title>__pi_clear_page (5,083,466 samples, 0.07%)</title><rect x="755.2" y="53" width="0.8" height="15.0" fill="rgb(236,144,34)" rx="2" ry="2" />
-<text  x="758.20" y="63.5" ></text>
+<title>__lruvec_stat_mod_folio (2,539,891 samples, 0.05%)</title><rect x="32.6" y="197" width="0.6" height="15.0" fill="rgb(246,191,45)" rx="2" ry="2" />
+<text  x="35.64" y="207.5" ></text>
 </g>
 <g >
-<title>alloc_perturb (2,542,160 samples, 0.03%)</title><rect x="16.1" y="357" width="0.4" height="15.0" fill="rgb(234,134,32)" rx="2" ry="2" />
-<text  x="19.09" y="367.5" ></text>
+<title>__free (56,161,312 samples, 1.11%)</title><rect x="105.5" y="405" width="13.1" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
+<text  x="108.54" y="415.5" ></text>
 </g>
 <g >
-<title>std::_Rb_tree_increment@plt (7,654,104 samples, 0.10%)</title><rect x="76.4" y="405" width="1.2" height="15.0" fill="rgb(213,40,9)" rx="2" ry="2" />
-<text  x="79.40" y="415.5" ></text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::refresh (12,758,407 samples, 0.25%)</title><rect x="650.9" y="389" width="3.0" height="15.0" fill="rgb(234,136,32)" rx="2" ry="2" />
+<text  x="653.89" y="399.5" ></text>
 </g>
 <g >
-<title>do_anonymous_page (10,039,587 samples, 0.13%)</title><rect x="755.2" y="165" width="1.5" height="15.0" fill="rgb(238,155,37)" rx="2" ry="2" />
-<text  x="758.20" y="175.5" ></text>
+<title>[unknown] (132,523,997 samples, 2.62%)</title><rect x="1154.9" y="453" width="30.9" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="1157.91" y="463.5" >[u..</text>
 </g>
 <g >
-<title>[unknown] (7,629,284 samples, 0.10%)</title><rect x="96.9" y="373" width="1.2" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="99.91" y="383.5" ></text>
+<title>folio_add_lru_vma (5,083,933 samples, 0.10%)</title><rect x="31.5" y="229" width="1.1" height="15.0" fill="rgb(252,216,51)" rx="2" ry="2" />
+<text  x="34.46" y="239.5" ></text>
 </g>
 <g >
-<title>do_mem_abort (44,976,898 samples, 0.58%)</title><rect x="18.8" y="309" width="6.8" height="15.0" fill="rgb(249,206,49)" rx="2" ry="2" />
-<text  x="21.75" y="319.5" ></text>
+<title>el0_svc (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="373" width="0.6" height="15.0" fill="rgb(244,183,43)" rx="2" ry="2" />
+<text  x="1192.42" y="383.5" ></text>
 </g>
 <g >
-<title>__libc_start_call_main (125,036,687 samples, 1.61%)</title><rect x="1169.1" y="453" width="18.9" height="15.0" fill="rgb(210,26,6)" rx="2" ry="2" />
-<text  x="1172.07" y="463.5" ></text>
+<title>std::_Rb_tree&lt;long, std::pair&lt;long const, Level&gt;, std::_Select1st&lt;std::pair&lt;long const, Level&gt; &gt;, std::less&lt;long&gt;, std::allocator&lt;std::pair&lt;long const, Level&gt; &gt; &gt;::_M_erase (28,012,365 samples, 0.55%)</title><rect x="1132.9" y="389" width="6.5" height="15.0" fill="rgb(253,224,53)" rx="2" ry="2" />
+<text  x="1135.85" y="399.5" ></text>
 </g>
 <g >
-<title>handle_mm_fault (44,976,898 samples, 0.58%)</title><rect x="18.8" y="261" width="6.8" height="15.0" fill="rgb(234,135,32)" rx="2" ry="2" />
-<text  x="21.75" y="271.5" ></text>
+<title>el0_svc_common.constprop.0 (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="341" width="0.6" height="15.0" fill="rgb(224,89,21)" rx="2" ry="2" />
+<text  x="1192.42" y="351.5" ></text>
 </g>
 <g >
-<title>vma_alloc_zeroed_movable_folio (19,977,891 samples, 0.26%)</title><rect x="20.6" y="181" width="3.1" height="15.0" fill="rgb(232,126,30)" rx="2" ry="2" />
-<text  x="23.63" y="191.5" ></text>
+<title>std::_Rb_tree&lt;long, std::pair&lt;long const, Level&gt;, std::_Select1st&lt;std::pair&lt;long const, Level&gt; &gt;, std::less&lt;long&gt;, std::allocator&lt;std::pair&lt;long const, Level&gt; &gt; &gt;::_M_emplace_hint_unique&lt;std::piecewise_construct_t const&amp;, std::tuple&lt;long const&amp;&gt;, std::tuple&lt;&gt; &gt; (82,639,666 samples, 1.63%)</title><rect x="653.9" y="389" width="19.3" height="15.0" fill="rgb(205,0,0)" rx="2" ry="2" />
+<text  x="656.87" y="399.5" ></text>
 </g>
 <g >
-<title>el0t_64_sync (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="373" width="0.4" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
-<text  x="1190.65" y="383.5" ></text>
+<title>__mod_node_page_state (2,542,896 samples, 0.05%)</title><rect x="33.2" y="197" width="0.6" height="15.0" fill="rgb(213,38,9)" rx="2" ry="2" />
+<text  x="36.24" y="207.5" ></text>
 </g>
 <g >
-<title>__vm_munmap (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="261" width="0.4" height="15.0" fill="rgb(231,121,28)" rx="2" ry="2" />
-<text  x="1190.65" y="271.5" ></text>
+<title>do_anonymous_page (7,534,638 samples, 0.15%)</title><rect x="693.3" y="197" width="1.8" height="15.0" fill="rgb(238,155,37)" rx="2" ry="2" />
+<text  x="696.31" y="207.5" ></text>
 </g>
 <g >
-<title>local_clock (2,482,575 samples, 0.03%)</title><rect x="10.0" y="53" width="0.4" height="15.0" fill="rgb(236,144,34)" rx="2" ry="2" />
-<text  x="13.00" y="63.5" ></text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::erase_order (15,313,912 samples, 0.30%)</title><rect x="57.3" y="485" width="3.6" height="15.0" fill="rgb(223,83,19)" rx="2" ry="2" />
+<text  x="60.34" y="495.5" ></text>
 </g>
 <g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::remove (2,077,771,491 samples, 26.70%)</title><rect x="839.5" y="373" width="315.1" height="15.0" fill="rgb(211,28,6)" rx="2" ry="2" />
-<text  x="842.50" y="383.5" >NasdaqBookParser&lt;NasdqBook&gt;::remove</text>
+<title>__folio_mod_stat (5,082,787 samples, 0.10%)</title><rect x="32.6" y="213" width="1.2" height="15.0" fill="rgb(254,227,54)" rx="2" ry="2" />
+<text  x="35.64" y="223.5" ></text>
 </g>
 <g >
-<title>__rmqueue_pcplist (7,568,999 samples, 0.10%)</title><rect x="22.5" y="69" width="1.2" height="15.0" fill="rgb(230,118,28)" rx="2" ry="2" />
-<text  x="25.51" y="79.5" ></text>
+<title>__GI___libc_malloc (67,806,520 samples, 1.34%)</title><rect x="35.6" y="421" width="15.8" height="15.0" fill="rgb(219,68,16)" rx="2" ry="2" />
+<text  x="38.60" y="431.5" ></text>
 </g>
 <g >
-<title>do_mem_abort (10,039,587 samples, 0.13%)</title><rect x="755.2" y="261" width="1.5" height="15.0" fill="rgb(249,206,49)" rx="2" ry="2" />
-<text  x="758.20" y="271.5" ></text>
+<title>alloc_pages_mpol (34,803,527 samples, 0.69%)</title><rect x="23.3" y="165" width="8.2" height="15.0" fill="rgb(254,227,54)" rx="2" ry="2" />
+<text  x="26.33" y="175.5" ></text>
 </g>
 <g >
-<title>__GI___sbrk (5,023,823 samples, 0.06%)</title><rect x="10.0" y="325" width="0.8" height="15.0" fill="rgb(211,28,6)" rx="2" ry="2" />
-<text  x="13.00" y="335.5" ></text>
+<title>[unknown] (1,201,612 samples, 0.02%)</title><rect x="120.4" y="421" width="0.3" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="123.43" y="431.5" ></text>
 </g>
 <g >
-<title>perf_iterate_sb (2,482,575 samples, 0.03%)</title><rect x="10.0" y="117" width="0.4" height="15.0" fill="rgb(244,179,42)" rx="2" ry="2" />
-<text  x="13.00" y="127.5" ></text>
+<title>std::_Rb_tree_increment (30,621,989 samples, 0.61%)</title><rect x="809.9" y="389" width="7.1" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="812.87" y="399.5" ></text>
 </g>
 <g >
-<title>[unknown] (33,056,025 samples, 0.42%)</title><rect x="1160.0" y="389" width="5.0" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1163.02" y="399.5" ></text>
+<title>_int_free (5,090,846 samples, 0.10%)</title><rect x="51.4" y="421" width="1.2" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="54.43" y="431.5" ></text>
 </g>
 <g >
-<title>[unknown] (76,585,709 samples, 0.98%)</title><rect x="77.6" y="373" width="11.6" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="80.56" y="383.5" ></text>
+<title>_int_free (78,927,539 samples, 1.56%)</title><rect x="1154.9" y="421" width="18.4" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="1157.91" y="431.5" ></text>
 </g>
 <g >
-<title>do_mem_abort (2,383,512 samples, 0.03%)</title><rect x="10.8" y="293" width="0.3" height="15.0" fill="rgb(249,206,49)" rx="2" ry="2" />
-<text  x="13.76" y="303.5" ></text>
+<title>__pi_memset_generic (2,537,911 samples, 0.05%)</title><rect x="33.8" y="277" width="0.6" height="15.0" fill="rgb(216,52,12)" rx="2" ry="2" />
+<text  x="36.83" y="287.5" ></text>
 </g>
 <g >
-<title>perf_event_mmap (2,482,575 samples, 0.03%)</title><rect x="10.0" y="149" width="0.4" height="15.0" fill="rgb(229,112,26)" rx="2" ry="2" />
-<text  x="13.00" y="159.5" ></text>
+<title>folio_add_new_anon_rmap (5,082,787 samples, 0.10%)</title><rect x="32.6" y="229" width="1.2" height="15.0" fill="rgb(233,133,31)" rx="2" ry="2" />
+<text  x="35.64" y="239.5" ></text>
 </g>
 <g >
-<title>[unknown] (125,036,687 samples, 1.61%)</title><rect x="1169.1" y="437" width="18.9" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1172.07" y="447.5" ></text>
+<title>do_translation_fault (57,396,059 samples, 1.14%)</title><rect x="21.6" y="325" width="13.4" height="15.0" fill="rgb(239,158,37)" rx="2" ry="2" />
+<text  x="24.61" y="335.5" ></text>
 </g>
 <g >
-<title>__GI___munmap (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="389" width="0.4" height="15.0" fill="rgb(240,161,38)" rx="2" ry="2" />
-<text  x="1190.65" y="399.5" ></text>
+<title>handle_mm_fault (7,534,638 samples, 0.15%)</title><rect x="693.3" y="245" width="1.8" height="15.0" fill="rgb(234,135,32)" rx="2" ry="2" />
+<text  x="696.31" y="255.5" ></text>
 </g>
 <g >
-<title>free_pages_and_swap_cache (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="149" width="0.4" height="15.0" fill="rgb(222,82,19)" rx="2" ry="2" />
-<text  x="1190.65" y="159.5" ></text>
+<title>malloc@plt (4,880,093 samples, 0.10%)</title><rect x="60.9" y="421" width="1.2" height="15.0" fill="rgb(246,192,46)" rx="2" ry="2" />
+<text  x="63.92" y="431.5" ></text>
 </g>
 <g >
-<title>el0t_64_sync_handler (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="357" width="0.4" height="15.0" fill="rgb(211,32,7)" rx="2" ry="2" />
-<text  x="1190.65" y="367.5" ></text>
+<title>__alloc_frozen_pages_noprof (5,079,270 samples, 0.10%)</title><rect x="693.9" y="101" width="1.2" height="15.0" fill="rgb(228,109,26)" rx="2" ry="2" />
+<text  x="696.88" y="111.5" ></text>
 </g>
 <g >
-<title>__GI___libc_malloc (4,967,890 samples, 0.06%)</title><rect x="46.7" y="389" width="0.8" height="15.0" fill="rgb(219,68,16)" rx="2" ry="2" />
-<text  x="49.72" y="399.5" ></text>
+<title>do_vmi_munmap (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="277" width="0.6" height="15.0" fill="rgb(253,223,53)" rx="2" ry="2" />
+<text  x="1192.42" y="287.5" ></text>
 </g>
 <g >
-<title>handle_pte_fault (39,989,455 samples, 0.51%)</title><rect x="19.5" y="229" width="6.1" height="15.0" fill="rgb(217,57,13)" rx="2" ry="2" />
-<text  x="22.51" y="239.5" ></text>
+<title>operator delete (2,553,473 samples, 0.05%)</title><rect x="1139.4" y="405" width="0.6" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="1142.39" y="415.5" ></text>
 </g>
 <g >
-<title>_int_free (76,585,709 samples, 0.98%)</title><rect x="77.6" y="357" width="11.6" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
-<text  x="80.56" y="367.5" ></text>
+<title>_int_malloc (107,118,672 samples, 2.12%)</title><rect x="10.0" y="405" width="25.0" height="15.0" fill="rgb(215,47,11)" rx="2" ry="2" />
+<text  x="13.00" y="415.5" >_..</text>
 </g>
 <g >
-<title>el0_da (12,442,617 samples, 0.16%)</title><rect x="754.8" y="277" width="1.9" height="15.0" fill="rgb(217,55,13)" rx="2" ry="2" />
-<text  x="757.83" y="287.5" ></text>
+<title>vma_alloc_zeroed_movable_folio (5,079,270 samples, 0.10%)</title><rect x="693.9" y="165" width="1.2" height="15.0" fill="rgb(232,126,30)" rx="2" ry="2" />
+<text  x="696.88" y="175.5" ></text>
 </g>
 <g >
-<title>operator delete (2,551,543 samples, 0.03%)</title><rect x="1159.6" y="373" width="0.4" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
-<text  x="1162.63" y="383.5" ></text>
+<title>__vm_munmap (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="293" width="0.6" height="15.0" fill="rgb(231,121,28)" rx="2" ry="2" />
+<text  x="1192.42" y="303.5" ></text>
 </g>
 <g >
-<title>__free (15,269,914 samples, 0.20%)</title><rect x="42.5" y="405" width="2.3" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
-<text  x="45.50" y="415.5" ></text>
+<title>scale_probe (5,055,060,508 samples, 100.00%)</title><rect x="10.0" y="501" width="1180.0" height="15.0" fill="rgb(228,106,25)" rx="2" ry="2" />
+<text  x="13.00" y="511.5" >scale_probe</text>
 </g>
 <g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::erase_order (35,738,243 samples, 0.46%)</title><rect x="47.5" y="453" width="5.4" height="15.0" fill="rgb(223,83,19)" rx="2" ry="2" />
-<text  x="50.48" y="463.5" ></text>
+<title>_int_free (40,854,896 samples, 0.81%)</title><rect x="96.0" y="389" width="9.5" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="99.00" y="399.5" ></text>
 </g>
 <g >
-<title>__handle_mm_fault (42,437,848 samples, 0.55%)</title><rect x="19.1" y="245" width="6.5" height="15.0" fill="rgb(207,9,2)" rx="2" ry="2" />
-<text  x="22.14" y="255.5" ></text>
+<title>rmqueue_bulk (2,537,024 samples, 0.05%)</title><rect x="694.5" y="37" width="0.6" height="15.0" fill="rgb(235,138,33)" rx="2" ry="2" />
+<text  x="697.47" y="47.5" ></text>
 </g>
 <g >
-<title>tlb_finish_mmu (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="181" width="0.4" height="15.0" fill="rgb(251,212,50)" rx="2" ry="2" />
-<text  x="1190.65" y="191.5" ></text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::refresh (5,103,473 samples, 0.10%)</title><rect x="1130.5" y="389" width="1.2" height="15.0" fill="rgb(234,136,32)" rx="2" ry="2" />
+<text  x="1133.47" y="399.5" ></text>
 </g>
 <g >
-<title>__folio_batch_add_and_move (2,412,449 samples, 0.03%)</title><rect x="756.0" y="117" width="0.3" height="15.0" fill="rgb(254,227,54)" rx="2" ry="2" />
-<text  x="758.97" y="127.5" ></text>
+<title>[unknown] (109,659,169 samples, 2.17%)</title><rect x="10.0" y="421" width="25.6" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="13.00" y="431.5" >[..</text>
 </g>
 <g >
-<title>handle_mm_fault (10,039,587 samples, 0.13%)</title><rect x="755.2" y="213" width="1.5" height="15.0" fill="rgb(234,135,32)" rx="2" ry="2" />
-<text  x="758.20" y="223.5" ></text>
+<title>operator new@plt (7,652,605 samples, 0.15%)</title><rect x="1151.3" y="437" width="1.8" height="15.0" fill="rgb(232,125,29)" rx="2" ry="2" />
+<text  x="1154.34" y="447.5" ></text>
 </g>
 <g >
-<title>el0_svc (5,023,823 samples, 0.06%)</title><rect x="10.0" y="261" width="0.8" height="15.0" fill="rgb(244,183,43)" rx="2" ry="2" />
-<text  x="13.00" y="271.5" ></text>
+<title>operator delete@plt (2,553,422 samples, 0.05%)</title><rect x="1188.8" y="469" width="0.6" height="15.0" fill="rgb(213,39,9)" rx="2" ry="2" />
+<text  x="1191.83" y="479.5" ></text>
 </g>
 <g >
-<title>sysmalloc (2,383,512 samples, 0.03%)</title><rect x="10.8" y="357" width="0.3" height="15.0" fill="rgb(213,38,9)" rx="2" ry="2" />
-<text  x="13.76" y="367.5" ></text>
+<title>el0t_64_sync_handler (7,534,638 samples, 0.15%)</title><rect x="693.3" y="325" width="1.8" height="15.0" fill="rgb(211,32,7)" rx="2" ry="2" />
+<text  x="696.31" y="335.5" ></text>
 </g>
 <g >
-<title>folio_alloc_mpol_noprof (19,977,891 samples, 0.26%)</title><rect x="20.6" y="149" width="3.1" height="15.0" fill="rgb(219,64,15)" rx="2" ry="2" />
-<text  x="23.63" y="159.5" ></text>
+<title>std::_Rb_tree_decrement@plt (25,483,434 samples, 0.50%)</title><rect x="88.3" y="437" width="5.9" height="15.0" fill="rgb(254,226,54)" rx="2" ry="2" />
+<text  x="91.27" y="447.5" ></text>
 </g>
 <g >
-<title>folio_add_lru_vma (7,532,684 samples, 0.10%)</title><rect x="23.7" y="197" width="1.1" height="15.0" fill="rgb(252,216,51)" rx="2" ry="2" />
-<text  x="26.66" y="207.5" ></text>
+<title>zap_present_ptes (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="133" width="0.6" height="15.0" fill="rgb(212,32,7)" rx="2" ry="2" />
+<text  x="1192.42" y="143.5" ></text>
 </g>
 <g >
-<title>_int_malloc (97,804,355 samples, 1.26%)</title><rect x="11.1" y="373" width="14.9" height="15.0" fill="rgb(215,47,11)" rx="2" ry="2" />
-<text  x="14.12" y="383.5" ></text>
+<title>free@plt (2,553,576 samples, 0.05%)</title><rect x="1146.6" y="437" width="0.6" height="15.0" fill="rgb(229,112,26)" rx="2" ry="2" />
+<text  x="1149.57" y="447.5" ></text>
 </g>
 <g >
-<title>el0_da (62,509,537 samples, 0.80%)</title><rect x="16.5" y="325" width="9.5" height="15.0" fill="rgb(217,55,13)" rx="2" ry="2" />
-<text  x="19.48" y="335.5" ></text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::remove (97,016,208 samples, 1.92%)</title><rect x="96.0" y="453" width="22.6" height="15.0" fill="rgb(211,28,6)" rx="2" ry="2" />
+<text  x="99.00" y="463.5" >N..</text>
 </g>
 <g >
-<title>[unknown] (12,711,129 samples, 0.16%)</title><rect x="96.9" y="405" width="1.9" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="99.91" y="415.5" ></text>
+<title>[unknown] (1,201,612 samples, 0.02%)</title><rect x="120.4" y="405" width="0.3" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="123.43" y="415.5" ></text>
 </g>
 <g >
-<title>_int_free (7,629,284 samples, 0.10%)</title><rect x="96.9" y="357" width="1.2" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
-<text  x="99.91" y="367.5" ></text>
+<title>std::_Hashtable&lt;unsigned long, std::pair&lt;unsigned long const, Order&gt;, std::allocator&lt;std::pair&lt;unsigned long const, Order&gt; &gt;, std::__detail::_Select1st, std::equal_to&lt;unsigned long&gt;, std::hash&lt;unsigned long&gt;, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits&lt;false, false, true&gt; &gt;::_M_rehash (27,776,515 samples, 0.55%)</title><rect x="688.6" y="373" width="6.5" height="15.0" fill="rgb(233,131,31)" rx="2" ry="2" />
+<text  x="691.58" y="383.5" ></text>
 </g>
 <g >
-<title>__handle_mm_fault (10,039,587 samples, 0.13%)</title><rect x="755.2" y="197" width="1.5" height="15.0" fill="rgb(207,9,2)" rx="2" ry="2" />
-<text  x="758.20" y="207.5" ></text>
+<title>el0t_64_sync (7,534,638 samples, 0.15%)</title><rect x="693.3" y="341" width="1.8" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
+<text  x="696.31" y="351.5" ></text>
 </g>
 <g >
-<title>el0t_64_sync (2,383,512 samples, 0.03%)</title><rect x="10.8" y="341" width="0.3" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
-<text  x="13.76" y="351.5" ></text>
+<title>operator new (4,880,093 samples, 0.10%)</title><rect x="60.9" y="437" width="1.2" height="15.0" fill="rgb(216,51,12)" rx="2" ry="2" />
+<text  x="63.92" y="447.5" ></text>
 </g>
 <g >
-<title>[unknown] (127,632,894 samples, 1.64%)</title><rect x="77.6" y="405" width="19.3" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="80.56" y="415.5" ></text>
+<title>[unknown] (10,198,604 samples, 0.20%)</title><rect x="1185.9" y="437" width="2.3" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="1188.85" y="447.5" ></text>
 </g>
 <g >
-<title>alloc_anon_folio (5,083,466 samples, 0.07%)</title><rect x="755.2" y="149" width="0.8" height="15.0" fill="rgb(223,86,20)" rx="2" ry="2" />
-<text  x="758.20" y="159.5" ></text>
+<title>__memset_generic (10,067,006 samples, 0.20%)</title><rect x="692.7" y="357" width="2.4" height="15.0" fill="rgb(231,124,29)" rx="2" ry="2" />
+<text  x="695.71" y="367.5" ></text>
 </g>
 <g >
-<title>scale_probe (7,780,584,028 samples, 100.00%)</title><rect x="10.0" y="469" width="1180.0" height="15.0" fill="rgb(228,106,25)" rx="2" ry="2" />
-<text  x="13.00" y="479.5" >scale_probe</text>
+<title>std::__detail::_Map_base&lt;unsigned long, std::pair&lt;unsigned long const, Order&gt;, std::allocator&lt;std::pair&lt;unsigned long const, Order&gt; &gt;, std::__detail::_Select1st, std::equal_to&lt;unsigned long&gt;, std::hash&lt;unsigned long&gt;, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits&lt;false, false, true&gt;, true&gt;::operator[] (96,394,209 samples, 1.91%)</title><rect x="673.2" y="389" width="22.5" height="15.0" fill="rgb(206,8,2)" rx="2" ry="2" />
+<text  x="676.16" y="399.5" >s..</text>
 </g>
 <g >
-<title>__free (2,541,226 samples, 0.03%)</title><rect x="520.0" y="341" width="0.4" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
-<text  x="522.99" y="351.5" ></text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::erase_order (1,314,732,608 samples, 26.01%)</title><rect x="823.6" y="389" width="306.9" height="15.0" fill="rgb(223,83,19)" rx="2" ry="2" />
+<text  x="826.57" y="399.5" >NasdaqBookParser&lt;NasdqBook&gt;::erase_order</text>
 </g>
 <g >
-<title>get_mem_cgroup_from_mm (2,383,512 samples, 0.03%)</title><rect x="10.8" y="149" width="0.3" height="15.0" fill="rgb(218,61,14)" rx="2" ry="2" />
-<text  x="13.76" y="159.5" ></text>
+<title>el0t_64_sync_handler (67,317,980 samples, 1.33%)</title><rect x="19.3" y="373" width="15.7" height="15.0" fill="rgb(211,32,7)" rx="2" ry="2" />
+<text  x="22.29" y="383.5" ></text>
 </g>
 <g >
-<title>alloc_pages_mpol (5,083,466 samples, 0.07%)</title><rect x="755.2" y="85" width="0.8" height="15.0" fill="rgb(254,227,54)" rx="2" ry="2" />
-<text  x="758.20" y="95.5" ></text>
+<title>do_vmi_align_munmap (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="261" width="0.6" height="15.0" fill="rgb(211,29,7)" rx="2" ry="2" />
+<text  x="1192.42" y="271.5" ></text>
 </g>
 <g >
-<title>operator delete@plt (15,317,280 samples, 0.20%)</title><rect x="48.3" y="437" width="2.3" height="15.0" fill="rgb(213,39,9)" rx="2" ry="2" />
-<text  x="51.25" y="447.5" ></text>
+<title>[unknown] (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="453" width="0.6" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="1192.42" y="463.5" ></text>
 </g>
 <g >
-<title>do_translation_fault (44,976,898 samples, 0.58%)</title><rect x="18.8" y="293" width="6.8" height="15.0" fill="rgb(239,158,37)" rx="2" ry="2" />
-<text  x="21.75" y="303.5" ></text>
+<title>__free (2,546,059 samples, 0.05%)</title><rect x="1188.2" y="437" width="0.6" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
+<text  x="1191.23" y="447.5" ></text>
 </g>
 <g >
-<title>arch_counter_get_cntvct (2,482,575 samples, 0.03%)</title><rect x="10.0" y="37" width="0.4" height="15.0" fill="rgb(219,64,15)" rx="2" ry="2" />
-<text  x="13.00" y="47.5" ></text>
+<title>[unknown] (7,636,148 samples, 0.15%)</title><rect x="118.6" y="421" width="1.8" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="121.65" y="431.5" ></text>
 </g>
 <g >
-<title>el0_svc_common.constprop.0 (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="309" width="0.4" height="15.0" fill="rgb(224,89,21)" rx="2" ry="2" />
-<text  x="1190.65" y="319.5" ></text>
+<title>get_page_from_freelist (2,537,024 samples, 0.05%)</title><rect x="694.5" y="85" width="0.6" height="15.0" fill="rgb(252,218,52)" rx="2" ry="2" />
+<text  x="697.47" y="95.5" ></text>
 </g>
 <g >
-<title>do_lookup_x (1,095,704 samples, 0.01%)</title><rect x="1168.9" y="357" width="0.2" height="15.0" fill="rgb(245,187,44)" rx="2" ry="2" />
-<text  x="1171.91" y="367.5" ></text>
+<title>do_page_fault (57,396,059 samples, 1.14%)</title><rect x="21.6" y="309" width="13.4" height="15.0" fill="rgb(216,54,13)" rx="2" ry="2" />
+<text  x="24.61" y="319.5" ></text>
 </g>
 <g >
-<title>main (45,824,340 samples, 0.59%)</title><rect x="1160.0" y="421" width="7.0" height="15.0" fill="rgb(243,179,42)" rx="2" ry="2" />
-<text  x="1163.02" y="431.5" ></text>
+<title>handle_pte_fault (7,534,638 samples, 0.15%)</title><rect x="693.3" y="213" width="1.8" height="15.0" fill="rgb(217,57,13)" rx="2" ry="2" />
+<text  x="696.31" y="223.5" ></text>
 </g>
 <g >
-<title>do_translation_fault (2,383,512 samples, 0.03%)</title><rect x="10.8" y="277" width="0.3" height="15.0" fill="rgb(239,158,37)" rx="2" ry="2" />
-<text  x="13.76" y="287.5" ></text>
+<title>__pi_clear_page (19,632,064 samples, 0.39%)</title><rect x="23.3" y="133" width="4.6" height="15.0" fill="rgb(236,144,34)" rx="2" ry="2" />
+<text  x="26.33" y="143.5" ></text>
 </g>
 <g >
-<title>_int_free (27,988,527 samples, 0.36%)</title><rect x="38.3" y="389" width="4.2" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
-<text  x="41.26" y="399.5" ></text>
+<title>el0t_64_sync (67,317,980 samples, 1.33%)</title><rect x="19.3" y="389" width="15.7" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
+<text  x="22.29" y="399.5" ></text>
 </g>
 <g >
-<title>[unknown] (5,023,823 samples, 0.06%)</title><rect x="10.0" y="341" width="0.8" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="13.00" y="351.5" ></text>
+<title>std::_Rb_tree_insert_and_rebalance@plt (2,539,399 samples, 0.05%)</title><rect x="1153.1" y="437" width="0.6" height="15.0" fill="rgb(241,168,40)" rx="2" ry="2" />
+<text  x="1156.13" y="447.5" ></text>
 </g>
 <g >
-<title>free@plt (5,106,186 samples, 0.07%)</title><rect x="1165.0" y="405" width="0.8" height="15.0" fill="rgb(229,112,26)" rx="2" ry="2" />
-<text  x="1168.03" y="415.5" ></text>
+<title>invoke_syscall (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="325" width="0.6" height="15.0" fill="rgb(209,18,4)" rx="2" ry="2" />
+<text  x="1192.42" y="335.5" ></text>
 </g>
 <g >
-<title>__free (5,105,014 samples, 0.07%)</title><rect x="1042.0" y="341" width="0.7" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
-<text  x="1044.96" y="351.5" ></text>
+<title>alloc_anon_folio (37,185,179 samples, 0.74%)</title><rect x="22.8" y="229" width="8.7" height="15.0" fill="rgb(223,86,20)" rx="2" ry="2" />
+<text  x="25.78" y="239.5" ></text>
 </g>
 <g >
-<title>[unknown] (127,632,894 samples, 1.64%)</title><rect x="77.6" y="389" width="19.3" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="80.56" y="399.5" ></text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::add (4,880,093 samples, 0.10%)</title><rect x="60.9" y="453" width="1.2" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
+<text  x="63.92" y="463.5" ></text>
 </g>
 <g >
-<title>[unknown] (12,711,129 samples, 0.16%)</title><rect x="96.9" y="389" width="1.9" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="99.91" y="399.5" ></text>
+<title>[unknown] (4,686,611,876 samples, 92.71%)</title><rect x="60.9" y="485" width="1094.0" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="63.92" y="495.5" >[unknown]</text>
 </g>
 <g >
-<title>operator new (7,664,194 samples, 0.10%)</title><rect x="71.0" y="373" width="1.2" height="15.0" fill="rgb(216,51,12)" rx="2" ry="2" />
-<text  x="74.01" y="383.5" ></text>
+<title>__folio_batch_add_and_move (5,083,933 samples, 0.10%)</title><rect x="31.5" y="197" width="1.1" height="15.0" fill="rgb(254,227,54)" rx="2" ry="2" />
+<text  x="34.46" y="207.5" ></text>
 </g>
 <g >
-<title>[unknown] (1,095,704 samples, 0.01%)</title><rect x="1168.9" y="421" width="0.2" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1171.91" y="431.5" ></text>
+<title>[unknown] (202,806,836 samples, 4.01%)</title><rect x="10.0" y="469" width="47.3" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="13.00" y="479.5" >[unk..</text>
 </g>
 <g >
-<title>folios_put_refs (2,453,456 samples, 0.03%)</title><rect x="24.4" y="133" width="0.4" height="15.0" fill="rgb(254,229,54)" rx="2" ry="2" />
-<text  x="27.43" y="143.5" ></text>
+<title>_int_free (2,546,550 samples, 0.05%)</title><rect x="1146.0" y="389" width="0.6" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="1148.98" y="399.5" ></text>
 </g>
 <g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::refresh (1,353,342,933 samples, 17.39%)</title><rect x="522.7" y="357" width="205.2" height="15.0" fill="rgb(234,136,32)" rx="2" ry="2" />
-<text  x="525.69" y="367.5" >NasdaqBookParser&lt;NasdqBook..</text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::depth (545,419,298 samples, 10.79%)</title><rect x="695.7" y="405" width="127.3" height="15.0" fill="rgb(242,173,41)" rx="2" ry="2" />
+<text  x="698.66" y="415.5" >NasdaqBookParse..</text>
 </g>
 <g >
-<title>malloc@plt (7,682,397 samples, 0.10%)</title><rect x="52.9" y="389" width="1.2" height="15.0" fill="rgb(246,192,46)" rx="2" ry="2" />
-<text  x="55.90" y="399.5" ></text>
+<title>[unknown] (20,364,412 samples, 0.40%)</title><rect x="1140.0" y="405" width="4.8" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="1143.04" y="415.5" ></text>
 </g>
 <g >
-<title>__list_del_entry_valid_or_report (2,482,426 samples, 0.03%)</title><rect x="22.5" y="53" width="0.4" height="15.0" fill="rgb(243,176,42)" rx="2" ry="2" />
-<text  x="25.51" y="63.5" ></text>
+<title>__memset_generic (2,548,832 samples, 0.05%)</title><rect x="1131.7" y="389" width="0.6" height="15.0" fill="rgb(231,124,29)" rx="2" ry="2" />
+<text  x="1134.66" y="399.5" ></text>
 </g>
 <g >
-<title>el0t_64_sync (12,442,617 samples, 0.16%)</title><rect x="754.8" y="309" width="1.9" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
-<text  x="757.83" y="319.5" ></text>
+<title>vma_alloc_folio_noprof (34,803,527 samples, 0.69%)</title><rect x="23.3" y="197" width="8.2" height="15.0" fill="rgb(218,61,14)" rx="2" ry="2" />
+<text  x="26.33" y="207.5" ></text>
 </g>
 <g >
-<title>folio_add_new_anon_rmap (5,077,980 samples, 0.07%)</title><rect x="24.8" y="197" width="0.8" height="15.0" fill="rgb(233,133,31)" rx="2" ry="2" />
-<text  x="27.80" y="207.5" ></text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::add (202,806,836 samples, 4.01%)</title><rect x="10.0" y="485" width="47.3" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
+<text  x="13.00" y="495.5" >Nasd..</text>
 </g>
 <g >
-<title>[unknown] (111,753,546 samples, 1.44%)</title><rect x="54.1" y="373" width="16.9" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="57.06" y="383.5" ></text>
+<title>__free (53,596,458 samples, 1.06%)</title><rect x="1173.3" y="437" width="12.5" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
+<text  x="1176.33" y="447.5" ></text>
 </g>
 <g >
-<title>[unknown] (7,407,335 samples, 0.10%)</title><rect x="10.0" y="373" width="1.1" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="13.00" y="383.5" ></text>
+<title>operator new (7,561,854 samples, 0.15%)</title><rect x="658.6" y="373" width="1.7" height="15.0" fill="rgb(216,51,12)" rx="2" ry="2" />
+<text  x="661.58" y="383.5" ></text>
 </g>
 <g >
-<title>percpu_counter_add_batch (2,543,672 samples, 0.03%)</title><rect x="756.3" y="149" width="0.4" height="15.0" fill="rgb(241,166,39)" rx="2" ry="2" />
-<text  x="759.33" y="159.5" ></text>
+<title>[unknown] (12,744,663 samples, 0.25%)</title><rect x="1185.9" y="453" width="2.9" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="1188.85" y="463.5" ></text>
 </g>
 <g >
-<title>operator new (17,542,423 samples, 0.23%)</title><rect x="44.8" y="405" width="2.7" height="15.0" fill="rgb(216,51,12)" rx="2" ry="2" />
-<text  x="47.82" y="415.5" ></text>
+<title>_int_free (2,547,897 samples, 0.05%)</title><rect x="1185.2" y="421" width="0.6" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="1188.25" y="431.5" ></text>
 </g>
 <g >
-<title>operator new@plt (5,095,144 samples, 0.07%)</title><rect x="1189.2" y="437" width="0.8" height="15.0" fill="rgb(232,125,29)" rx="2" ry="2" />
-<text  x="1192.23" y="447.5" ></text>
+<title>el0_da (67,317,980 samples, 1.33%)</title><rect x="19.3" y="357" width="15.7" height="15.0" fill="rgb(217,55,13)" rx="2" ry="2" />
+<text  x="22.29" y="367.5" ></text>
 </g>
 <g >
-<title>std::_Rb_tree&lt;long, std::pair&lt;long const, Level&gt;, std::_Select1st&lt;std::pair&lt;long const, Level&gt; &gt;, std::less&lt;long&gt;, std::allocator&lt;std::pair&lt;long const, Level&gt; &gt; &gt;::_M_emplace_hint_unique&lt;std::piecewise_construct_t const&amp;, std::tuple&lt;long const&amp;&gt;, std::tuple&lt;&gt; &gt; (121,346,836 samples, 1.56%)</title><rect x="727.9" y="357" width="18.4" height="15.0" fill="rgb(205,0,0)" rx="2" ry="2" />
-<text  x="730.94" y="367.5" ></text>
+<title>get_page_from_freelist (15,171,463 samples, 0.30%)</title><rect x="27.9" y="133" width="3.6" height="15.0" fill="rgb(252,218,52)" rx="2" ry="2" />
+<text  x="30.91" y="143.5" ></text>
 </g>
 <g >
-<title>__free (51,047,185 samples, 0.66%)</title><rect x="89.2" y="373" width="7.7" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
-<text  x="92.17" y="383.5" ></text>
+<title>operator new@plt (5,095,011 samples, 0.10%)</title><rect x="1153.7" y="437" width="1.2" height="15.0" fill="rgb(232,125,29)" rx="2" ry="2" />
+<text  x="1156.72" y="447.5" ></text>
 </g>
 <g >
-<title>__alloc_frozen_pages_noprof (5,083,466 samples, 0.07%)</title><rect x="755.2" y="69" width="0.8" height="15.0" fill="rgb(228,109,26)" rx="2" ry="2" />
-<text  x="758.20" y="79.5" ></text>
+<title>[unknown] (202,806,836 samples, 4.01%)</title><rect x="10.0" y="453" width="47.3" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="13.00" y="463.5" >[unk..</text>
 </g>
 <g >
-<title>do_anonymous_page (2,383,512 samples, 0.03%)</title><rect x="10.8" y="197" width="0.3" height="15.0" fill="rgb(238,155,37)" rx="2" ry="2" />
-<text  x="13.76" y="207.5" ></text>
+<title>el0t_64_sync (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="405" width="0.6" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
+<text  x="1192.42" y="415.5" ></text>
 </g>
 <g >
-<title>__arm64_sys_munmap (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="277" width="0.4" height="15.0" fill="rgb(214,44,10)" rx="2" ry="2" />
-<text  x="1190.65" y="287.5" ></text>
+<title>std::_Rb_tree_rebalance_for_erase@plt (2,556,246 samples, 0.05%)</title><rect x="60.3" y="469" width="0.6" height="15.0" fill="rgb(221,76,18)" rx="2" ry="2" />
+<text  x="63.32" y="479.5" ></text>
 </g>
 <g >
-<title>operator new (12,497,750 samples, 0.16%)</title><rect x="731.8" y="341" width="1.9" height="15.0" fill="rgb(216,51,12)" rx="2" ry="2" />
-<text  x="734.80" y="351.5" ></text>
+<title>[unknown] (28,003,290 samples, 0.55%)</title><rect x="1140.0" y="421" width="6.6" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="1143.04" y="431.5" ></text>
 </g>
 <g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::erase_order (1,342,610,925 samples, 17.26%)</title><rect x="840.7" y="357" width="203.6" height="15.0" fill="rgb(223,83,19)" rx="2" ry="2" />
-<text  x="843.67" y="367.5" >NasdaqBookParser&lt;NasdqBook..</text>
+<title>vma_alloc_zeroed_movable_folio (34,803,527 samples, 0.69%)</title><rect x="23.3" y="213" width="8.2" height="15.0" fill="rgb(232,126,30)" rx="2" ry="2" />
+<text  x="26.33" y="223.5" ></text>
 </g>
 <g >
-<title>[unknown] (79,091,925 samples, 1.02%)</title><rect x="1169.1" y="405" width="12.0" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1172.07" y="415.5" ></text>
+<title>percpu_ref_put_many.constprop.0 (2,381,652 samples, 0.05%)</title><rect x="22.8" y="197" width="0.5" height="15.0" fill="rgb(227,103,24)" rx="2" ry="2" />
+<text  x="25.78" y="207.5" ></text>
 </g>
 <g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::remove (127,632,894 samples, 1.64%)</title><rect x="77.6" y="421" width="19.3" height="15.0" fill="rgb(211,28,6)" rx="2" ry="2" />
-<text  x="80.56" y="431.5" ></text>
+<title>[unknown] (182,556,535 samples, 3.61%)</title><rect x="10.0" y="437" width="42.6" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="13.00" y="447.5" >[unk..</text>
 </g>
 <g >
-<title>std::_Hashtable&lt;unsigned long, std::pair&lt;unsigned long const, Order&gt;, std::allocator&lt;std::pair&lt;unsigned long const, Order&gt; &gt;, std::__detail::_Select1st, std::equal_to&lt;unsigned long&gt;, std::hash&lt;unsigned long&gt;, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits&lt;false, false, true&gt; &gt;::_M_rehash (24,820,908 samples, 0.32%)</title><rect x="753.0" y="341" width="3.7" height="15.0" fill="rgb(233,131,31)" rx="2" ry="2" />
-<text  x="755.95" y="351.5" ></text>
+<title>[unknown] (78,927,539 samples, 1.56%)</title><rect x="1154.9" y="437" width="18.4" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="1157.91" y="447.5" ></text>
 </g>
 <g >
-<title>[unknown] (1,095,704 samples, 0.01%)</title><rect x="1168.9" y="389" width="0.2" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1171.91" y="399.5" ></text>
+<title>__libc_start_call_main (132,523,997 samples, 2.62%)</title><rect x="1154.9" y="485" width="30.9" height="15.0" fill="rgb(210,26,6)" rx="2" ry="2" />
+<text  x="1157.91" y="495.5" >__..</text>
 </g>
 <g >
-<title>std::__detail::_Map_base&lt;unsigned long, std::pair&lt;unsigned long const, Order&gt;, std::allocator&lt;std::pair&lt;unsigned long const, Order&gt; &gt;, std::__detail::_Select1st, std::equal_to&lt;unsigned long&gt;, std::hash&lt;unsigned long&gt;, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits&lt;false, false, true&gt;, true&gt;::operator[] (5,095,144 samples, 0.07%)</title><rect x="1189.2" y="453" width="0.8" height="15.0" fill="rgb(206,8,2)" rx="2" ry="2" />
-<text  x="1192.23" y="463.5" ></text>
+<title>[unknown] (12,744,663 samples, 0.25%)</title><rect x="1185.9" y="469" width="2.9" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="1188.85" y="479.5" ></text>
 </g>
 <g >
-<title>do_translation_fault (2,538,924 samples, 0.03%)</title><rect x="25.6" y="309" width="0.4" height="15.0" fill="rgb(239,158,37)" rx="2" ry="2" />
-<text  x="28.57" y="319.5" ></text>
+<title>vma_alloc_folio_noprof (5,079,270 samples, 0.10%)</title><rect x="693.9" y="149" width="1.2" height="15.0" fill="rgb(218,61,14)" rx="2" ry="2" />
+<text  x="696.88" y="159.5" ></text>
 </g>
 <g >
-<title>operator delete@plt (7,662,129 samples, 0.10%)</title><rect x="1165.8" y="405" width="1.2" height="15.0" fill="rgb(213,39,9)" rx="2" ry="2" />
-<text  x="1168.81" y="415.5" ></text>
+<title>[unknown] (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="469" width="0.6" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="1192.42" y="479.5" ></text>
 </g>
 <g >
-<title>__do_sys_brk (5,023,823 samples, 0.06%)</title><rect x="10.0" y="181" width="0.8" height="15.0" fill="rgb(217,58,13)" rx="2" ry="2" />
-<text  x="13.00" y="191.5" ></text>
+<title>[unknown] (4,367,726,490 samples, 86.40%)</title><rect x="120.4" y="453" width="1019.6" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="123.43" y="463.5" >[unknown]</text>
 </g>
 <g >
-<title>std::_Rb_tree_insert_and_rebalance (83,359,720 samples, 1.07%)</title><rect x="733.7" y="341" width="12.6" height="15.0" fill="rgb(225,94,22)" rx="2" ry="2" />
-<text  x="736.70" y="351.5" ></text>
+<title>do_anonymous_page (49,850,730 samples, 0.99%)</title><rect x="22.2" y="245" width="11.6" height="15.0" fill="rgb(238,155,37)" rx="2" ry="2" />
+<text  x="25.19" y="255.5" ></text>
 </g>
 <g >
-<title>folio_batch_move_lru (7,532,684 samples, 0.10%)</title><rect x="23.7" y="149" width="1.1" height="15.0" fill="rgb(207,10,2)" rx="2" ry="2" />
-<text  x="26.66" y="159.5" ></text>
+<title>[unknown] (112,303,379 samples, 2.22%)</title><rect x="62.1" y="421" width="26.2" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="65.06" y="431.5" >[..</text>
 </g>
 <g >
-<title>operator new (10,204,559 samples, 0.13%)</title><rect x="1167.0" y="421" width="1.5" height="15.0" fill="rgb(216,51,12)" rx="2" ry="2" />
-<text  x="1169.97" y="431.5" ></text>
+<title>folio_add_lru (5,083,933 samples, 0.10%)</title><rect x="31.5" y="213" width="1.1" height="15.0" fill="rgb(208,17,4)" rx="2" ry="2" />
+<text  x="34.46" y="223.5" ></text>
 </g>
 <g >
-<title>operator new (7,682,397 samples, 0.10%)</title><rect x="52.9" y="405" width="1.2" height="15.0" fill="rgb(216,51,12)" rx="2" ry="2" />
-<text  x="55.90" y="415.5" ></text>
+<title>rmqueue.constprop.0 (15,171,463 samples, 0.30%)</title><rect x="27.9" y="117" width="3.6" height="15.0" fill="rgb(212,33,7)" rx="2" ry="2" />
+<text  x="30.91" y="127.5" ></text>
 </g>
 <g >
-<title>std::__detail::_Map_base&lt;unsigned long, std::pair&lt;unsigned long const, Order&gt;, std::allocator&lt;std::pair&lt;unsigned long const, Order&gt; &gt;, std::__detail::_Select1st, std::equal_to&lt;unsigned long&gt;, std::hash&lt;unsigned long&gt;, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits&lt;false, false, true&gt;, true&gt;::operator[] (68,415,402 samples, 0.88%)</title><rect x="746.3" y="357" width="10.4" height="15.0" fill="rgb(206,8,2)" rx="2" ry="2" />
-<text  x="749.34" y="367.5" ></text>
+<title>[unknown] (97,016,208 samples, 1.92%)</title><rect x="96.0" y="421" width="22.6" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="99.00" y="431.5" >[..</text>
 </g>
 <g >
-<title>el0t_64_sync_handler (2,383,512 samples, 0.03%)</title><rect x="10.8" y="325" width="0.3" height="15.0" fill="rgb(211,32,7)" rx="2" ry="2" />
-<text  x="13.76" y="335.5" ></text>
+<title>_int_free (7,636,148 samples, 0.15%)</title><rect x="118.6" y="389" width="1.8" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="121.65" y="399.5" ></text>
 </g>
 <g >
-<title>folio_alloc_mpol_noprof (5,083,466 samples, 0.07%)</title><rect x="755.2" y="101" width="0.8" height="15.0" fill="rgb(219,64,15)" rx="2" ry="2" />
-<text  x="758.20" y="111.5" ></text>
+<title>zap_pmd_range.isra.0 (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="165" width="0.6" height="15.0" fill="rgb(244,180,43)" rx="2" ry="2" />
+<text  x="1192.42" y="175.5" ></text>
 </g>
 <g >
-<title>__free (12,717,936 samples, 0.16%)</title><rect x="1163.1" y="373" width="1.9" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
-<text  x="1166.11" y="383.5" ></text>
+<title>el0t_64_sync_handler (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="389" width="0.6" height="15.0" fill="rgb(211,32,7)" rx="2" ry="2" />
+<text  x="1192.42" y="399.5" ></text>
 </g>
 <g >
-<title>el0_svc (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="341" width="0.4" height="15.0" fill="rgb(244,183,43)" rx="2" ry="2" />
-<text  x="1190.65" y="351.5" ></text>
+<title>vms_complete_munmap_vmas (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="245" width="0.6" height="15.0" fill="rgb(216,52,12)" rx="2" ry="2" />
+<text  x="1192.42" y="255.5" ></text>
 </g>
 <g >
-<title>std::_Rb_tree&lt;long, std::pair&lt;long const, Level&gt;, std::_Select1st&lt;std::pair&lt;long const, Level&gt; &gt;, std::less&lt;long&gt;, std::allocator&lt;std::pair&lt;long const, Level&gt; &gt; &gt;::_M_erase (27,978,739 samples, 0.36%)</title><rect x="1154.6" y="357" width="4.3" height="15.0" fill="rgb(253,224,53)" rx="2" ry="2" />
-<text  x="1157.62" y="367.5" ></text>
+<title>__libc_start_call_main (4,366,524,878 samples, 86.38%)</title><rect x="120.7" y="437" width="1019.3" height="15.0" fill="rgb(210,26,6)" rx="2" ry="2" />
+<text  x="123.71" y="447.5" >__libc_start_call_main</text>
 </g>
 <g >
-<title>el0t_64_sync_handler (5,023,823 samples, 0.06%)</title><rect x="10.0" y="277" width="0.8" height="15.0" fill="rgb(211,32,7)" rx="2" ry="2" />
-<text  x="13.00" y="287.5" ></text>
+<title>std::vector&lt;LevelRow, std::allocator&lt;LevelRow&gt; &gt;::reserve (25,530,996 samples, 0.51%)</title><rect x="817.0" y="389" width="6.0" height="15.0" fill="rgb(222,79,19)" rx="2" ry="2" />
+<text  x="820.02" y="399.5" ></text>
 </g>
 <g >
-<title>invoke_syscall (5,023,823 samples, 0.06%)</title><rect x="10.0" y="213" width="0.8" height="15.0" fill="rgb(209,18,4)" rx="2" ry="2" />
-<text  x="13.00" y="223.5" ></text>
+<title>operator delete@plt (10,216,877 samples, 0.20%)</title><rect x="1147.2" y="437" width="2.4" height="15.0" fill="rgb(213,39,9)" rx="2" ry="2" />
+<text  x="1150.17" y="447.5" ></text>
 </g>
 <g >
-<title>_int_free (20,338,089 samples, 0.26%)</title><rect x="1160.0" y="357" width="3.1" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
-<text  x="1163.02" y="367.5" ></text>
+<title>main (4,366,524,878 samples, 86.38%)</title><rect x="120.7" y="421" width="1019.3" height="15.0" fill="rgb(243,179,42)" rx="2" ry="2" />
+<text  x="123.71" y="431.5" >main</text>
 </g>
 <g >
-<title>__tlb_batch_free_encoded_pages (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="165" width="0.4" height="15.0" fill="rgb(205,3,0)" rx="2" ry="2" />
-<text  x="1190.65" y="175.5" ></text>
+<title>operator new (12,765,558 samples, 0.25%)</title><rect x="85.3" y="405" width="3.0" height="15.0" fill="rgb(216,51,12)" rx="2" ry="2" />
+<text  x="88.29" y="415.5" ></text>
 </g>
 <g >
-<title>handle_mm_fault (2,383,512 samples, 0.03%)</title><rect x="10.8" y="245" width="0.3" height="15.0" fill="rgb(234,135,32)" rx="2" ry="2" />
-<text  x="13.76" y="255.5" ></text>
+<title>std::_Rb_tree_rebalance_for_erase (30,638,422 samples, 0.61%)</title><rect x="1123.3" y="373" width="7.2" height="15.0" fill="rgb(205,2,0)" rx="2" ry="2" />
+<text  x="1126.32" y="383.5" ></text>
 </g>
 <g >
-<title>do_vmi_munmap (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="245" width="0.4" height="15.0" fill="rgb(253,223,53)" rx="2" ry="2" />
-<text  x="1190.65" y="255.5" ></text>
+<title>__pi_clear_page (2,542,246 samples, 0.05%)</title><rect x="693.9" y="85" width="0.6" height="15.0" fill="rgb(236,144,34)" rx="2" ry="2" />
+<text  x="696.88" y="95.5" ></text>
 </g>
 <g >
-<title>[unknown] (119,417,740 samples, 1.53%)</title><rect x="54.1" y="405" width="18.1" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="57.06" y="415.5" ></text>
+<title>handle_mm_fault (52,388,641 samples, 1.04%)</title><rect x="22.2" y="293" width="12.2" height="15.0" fill="rgb(234,135,32)" rx="2" ry="2" />
+<text  x="25.19" y="303.5" ></text>
 </g>
 <g >
-<title>vma_merge_new_range (2,541,248 samples, 0.03%)</title><rect x="10.4" y="149" width="0.4" height="15.0" fill="rgb(245,186,44)" rx="2" ry="2" />
-<text  x="13.38" y="159.5" ></text>
+<title>__rmqueue_pcplist (2,537,024 samples, 0.05%)</title><rect x="694.5" y="53" width="0.6" height="15.0" fill="rgb(230,118,28)" rx="2" ry="2" />
+<text  x="697.47" y="63.5" ></text>
 </g>
 <g >
-<title>vms_complete_munmap_vmas (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="213" width="0.4" height="15.0" fill="rgb(216,52,12)" rx="2" ry="2" />
-<text  x="1190.65" y="223.5" ></text>
+<title>malloc@plt (7,651,300 samples, 0.15%)</title><rect x="1149.6" y="437" width="1.7" height="15.0" fill="rgb(246,192,46)" rx="2" ry="2" />
+<text  x="1152.55" y="447.5" ></text>
 </g>
 <g >
-<title>get_page_from_freelist (7,568,999 samples, 0.10%)</title><rect x="22.5" y="101" width="1.2" height="15.0" fill="rgb(252,218,52)" rx="2" ry="2" />
-<text  x="25.51" y="111.5" ></text>
+<title>do_lookup_x (2,540,497 samples, 0.05%)</title><rect x="35.0" y="405" width="0.6" height="15.0" fill="rgb(245,187,44)" rx="2" ry="2" />
+<text  x="38.01" y="415.5" ></text>
 </g>
 <g >
-<title>perf_event_mmap_output (2,482,575 samples, 0.03%)</title><rect x="10.0" y="85" width="0.4" height="15.0" fill="rgb(214,45,10)" rx="2" ry="2" />
-<text  x="13.00" y="95.5" ></text>
+<title>operator new (7,651,300 samples, 0.15%)</title><rect x="1149.6" y="453" width="1.7" height="15.0" fill="rgb(216,51,12)" rx="2" ry="2" />
+<text  x="1152.55" y="463.5" ></text>
 </g>
 <g >
-<title>handle_pte_fault (10,039,587 samples, 0.13%)</title><rect x="755.2" y="181" width="1.5" height="15.0" fill="rgb(217,57,13)" rx="2" ry="2" />
-<text  x="758.20" y="191.5" ></text>
+<title>operator delete (2,551,202 samples, 0.05%)</title><rect x="1122.7" y="373" width="0.6" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="1125.72" y="383.5" ></text>
 </g>
 <g >
-<title>__mem_cgroup_charge (2,383,512 samples, 0.03%)</title><rect x="10.8" y="165" width="0.3" height="15.0" fill="rgb(218,60,14)" rx="2" ry="2" />
-<text  x="13.76" y="175.5" ></text>
+<title>[unknown] (1,201,612 samples, 0.02%)</title><rect x="120.4" y="437" width="0.3" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="123.43" y="447.5" ></text>
 </g>
 <g >
-<title>__perf_event_header__init_id (2,482,575 samples, 0.03%)</title><rect x="10.0" y="69" width="0.4" height="15.0" fill="rgb(242,173,41)" rx="2" ry="2" />
-<text  x="13.00" y="79.5" ></text>
+<title>do_mem_abort (7,534,638 samples, 0.15%)</title><rect x="693.3" y="293" width="1.8" height="15.0" fill="rgb(249,206,49)" rx="2" ry="2" />
+<text  x="696.31" y="303.5" ></text>
 </g>
 <g >
-<title>alloc_anon_folio (19,977,891 samples, 0.26%)</title><rect x="20.6" y="197" width="3.1" height="15.0" fill="rgb(223,86,20)" rx="2" ry="2" />
-<text  x="23.63" y="207.5" ></text>
+<title>[unknown] (4,686,611,876 samples, 92.71%)</title><rect x="60.9" y="469" width="1094.0" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="63.92" y="479.5" >[unknown]</text>
 </g>
 <g >
-<title>do_page_fault (10,039,587 samples, 0.13%)</title><rect x="755.2" y="229" width="1.5" height="15.0" fill="rgb(216,54,13)" rx="2" ry="2" />
-<text  x="758.20" y="239.5" ></text>
+<title>unmap_page_range (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="181" width="0.6" height="15.0" fill="rgb(206,5,1)" rx="2" ry="2" />
+<text  x="1192.42" y="191.5" ></text>
 </g>
 <g >
-<title>_int_free (7,641,212 samples, 0.10%)</title><rect x="1188.1" y="389" width="1.1" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
-<text  x="1191.07" y="399.5" ></text>
+<title>NasdqBook::~NasdqBook (33,107,592 samples, 0.65%)</title><rect x="1131.7" y="405" width="7.7" height="15.0" fill="rgb(248,199,47)" rx="2" ry="2" />
+<text  x="1134.66" y="415.5" ></text>
 </g>
 <g >
-<title>std::_Rb_tree_decrement (191,391,809 samples, 2.46%)</title><rect x="798.9" y="357" width="29.0" height="15.0" fill="rgb(238,152,36)" rx="2" ry="2" />
-<text  x="801.89" y="367.5" >st..</text>
+<title>get_mem_cgroup_from_mm (2,455,368 samples, 0.05%)</title><rect x="693.3" y="149" width="0.6" height="15.0" fill="rgb(218,61,14)" rx="2" ry="2" />
+<text  x="696.31" y="159.5" ></text>
 </g>
 <g >
-<title>__free (45,944,762 samples, 0.59%)</title><rect x="1181.1" y="405" width="6.9" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
-<text  x="1184.07" y="415.5" ></text>
+<title>std::__detail::_Prime_rehash_policy::_M_need_rehash (2,555,076 samples, 0.05%)</title><rect x="695.1" y="373" width="0.6" height="15.0" fill="rgb(228,109,26)" rx="2" ry="2" />
+<text  x="698.06" y="383.5" ></text>
 </g>
 <g >
-<title>invoke_syscall (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="293" width="0.4" height="15.0" fill="rgb(209,18,4)" rx="2" ry="2" />
-<text  x="1190.65" y="303.5" ></text>
+<title>__list_del_entry_valid_or_report (5,080,607 samples, 0.10%)</title><rect x="29.7" y="85" width="1.2" height="15.0" fill="rgb(243,176,42)" rx="2" ry="2" />
+<text  x="32.68" y="95.5" ></text>
 </g>
 <g >
-<title>__GI___libc_malloc (2,554,540 samples, 0.03%)</title><rect x="71.8" y="357" width="0.4" height="15.0" fill="rgb(219,68,16)" rx="2" ry="2" />
-<text  x="74.78" y="367.5" ></text>
+<title>operator new (15,160,967 samples, 0.30%)</title><rect x="53.8" y="437" width="3.5" height="15.0" fill="rgb(216,51,12)" rx="2" ry="2" />
+<text  x="56.80" y="447.5" ></text>
 </g>
 <g >
-<title>[unknown] (6,997,112,828 samples, 89.93%)</title><rect x="98.8" y="421" width="1061.2" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="101.84" y="431.5" >[unknown]</text>
+<title>__GI___munmap (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="421" width="0.6" height="15.0" fill="rgb(240,161,38)" rx="2" ry="2" />
+<text  x="1192.42" y="431.5" ></text>
 </g>
 <g >
-<title>[unknown] (119,417,740 samples, 1.53%)</title><rect x="54.1" y="389" width="18.1" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="57.06" y="399.5" ></text>
+<title>__handle_mm_fault (7,534,638 samples, 0.15%)</title><rect x="693.3" y="229" width="1.8" height="15.0" fill="rgb(207,9,2)" rx="2" ry="2" />
+<text  x="696.31" y="239.5" ></text>
 </g>
 <g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::refresh (727,496,627 samples, 9.35%)</title><rect x="1044.3" y="357" width="110.3" height="15.0" fill="rgb(234,136,32)" rx="2" ry="2" />
-<text  x="1047.29" y="367.5" >NasdaqBookPar..</text>
+<title>vms_clear_ptes.part.0 (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="229" width="0.6" height="15.0" fill="rgb(215,49,11)" rx="2" ry="2" />
+<text  x="1192.42" y="239.5" ></text>
 </g>
 <g >
-<title>alloc_pages_mpol (17,438,675 samples, 0.22%)</title><rect x="21.0" y="133" width="2.7" height="15.0" fill="rgb(254,227,54)" rx="2" ry="2" />
-<text  x="24.01" y="143.5" ></text>
+<title>zap_pte_range (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="149" width="0.6" height="15.0" fill="rgb(231,120,28)" rx="2" ry="2" />
+<text  x="1192.42" y="159.5" ></text>
 </g>
 <g >
-<title>vma_alloc_folio_noprof (5,083,466 samples, 0.07%)</title><rect x="755.2" y="117" width="0.8" height="15.0" fill="rgb(218,61,14)" rx="2" ry="2" />
-<text  x="758.20" y="127.5" ></text>
+<title>rmqueue_bulk (2,539,374 samples, 0.05%)</title><rect x="30.9" y="85" width="0.6" height="15.0" fill="rgb(235,138,33)" rx="2" ry="2" />
+<text  x="33.86" y="95.5" ></text>
 </g>
 <g >
-<title>__alloc_frozen_pages_noprof (17,438,675 samples, 0.22%)</title><rect x="21.0" y="117" width="2.7" height="15.0" fill="rgb(228,109,26)" rx="2" ry="2" />
-<text  x="24.01" y="127.5" ></text>
+<title>__arm64_sys_munmap (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="309" width="0.6" height="15.0" fill="rgb(214,44,10)" rx="2" ry="2" />
+<text  x="1192.42" y="319.5" ></text>
 </g>
 <g >
-<title>__arm64_sys_brk (5,023,823 samples, 0.06%)</title><rect x="10.0" y="197" width="0.8" height="15.0" fill="rgb(228,109,26)" rx="2" ry="2" />
-<text  x="13.00" y="207.5" ></text>
+<title>[unknown] (40,854,896 samples, 0.81%)</title><rect x="96.0" y="405" width="9.5" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="99.00" y="415.5" ></text>
 </g>
 <g >
-<title>do_brk_flags (5,023,823 samples, 0.06%)</title><rect x="10.0" y="165" width="0.8" height="15.0" fill="rgb(220,73,17)" rx="2" ry="2" />
-<text  x="13.00" y="175.5" ></text>
+<title>do_el0_svc (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="357" width="0.6" height="15.0" fill="rgb(218,60,14)" rx="2" ry="2" />
+<text  x="1192.42" y="367.5" ></text>
 </g>
 <g >
-<title>[unknown] (1,095,704 samples, 0.01%)</title><rect x="1168.9" y="405" width="0.2" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1171.91" y="415.5" ></text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::erase_order (302,981,872 samples, 5.99%)</title><rect x="580.2" y="389" width="70.7" height="15.0" fill="rgb(223,83,19)" rx="2" ry="2" />
+<text  x="583.17" y="399.5" >NasdaqB..</text>
 </g>
 <g >
-<title>main (6,997,112,828 samples, 89.93%)</title><rect x="98.8" y="389" width="1061.2" height="15.0" fill="rgb(243,179,42)" rx="2" ry="2" />
-<text  x="101.84" y="399.5" >main</text>
+<title>do_translation_fault (7,534,638 samples, 0.15%)</title><rect x="693.3" y="277" width="1.8" height="15.0" fill="rgb(239,158,37)" rx="2" ry="2" />
+<text  x="696.31" y="287.5" ></text>
 </g>
 <g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::depth (154,932,755 samples, 1.99%)</title><rect x="54.1" y="421" width="23.5" height="15.0" fill="rgb(242,173,41)" rx="2" ry="2" />
-<text  x="57.06" y="431.5" >N..</text>
+<title>folio_alloc_mpol_noprof (34,803,527 samples, 0.69%)</title><rect x="23.3" y="181" width="8.2" height="15.0" fill="rgb(219,64,15)" rx="2" ry="2" />
+<text  x="26.33" y="191.5" ></text>
 </g>
 <g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::depth (545,867,515 samples, 7.02%)</title><rect x="756.7" y="373" width="82.8" height="15.0" fill="rgb(242,173,41)" rx="2" ry="2" />
-<text  x="759.72" y="383.5" >NasdaqBoo..</text>
+<title>operator delete@plt (10,206,772 samples, 0.20%)</title><rect x="57.9" y="469" width="2.4" height="15.0" fill="rgb(213,39,9)" rx="2" ry="2" />
+<text  x="60.94" y="479.5" ></text>
 </g>
 <g >
-<title>__memset_generic (14,874,368 samples, 0.19%)</title><rect x="754.5" y="325" width="2.2" height="15.0" fill="rgb(231,124,29)" rx="2" ry="2" />
-<text  x="757.46" y="335.5" ></text>
+<title>[unknown] (132,523,997 samples, 2.62%)</title><rect x="1154.9" y="469" width="30.9" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="1157.91" y="479.5" >[u..</text>
 </g>
 <g >
-<title>malloc@plt (10,204,559 samples, 0.13%)</title><rect x="1167.0" y="405" width="1.5" height="15.0" fill="rgb(246,192,46)" rx="2" ry="2" />
-<text  x="1169.97" y="415.5" ></text>
+<title>__free (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="437" width="0.6" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
+<text  x="1192.42" y="447.5" ></text>
 </g>
 <g >
-<title>std::_Rb_tree_rebalance_for_erase@plt (15,311,769 samples, 0.20%)</title><rect x="50.6" y="437" width="2.3" height="15.0" fill="rgb(221,76,18)" rx="2" ry="2" />
-<text  x="53.57" y="447.5" ></text>
+<title>__GI___libc_malloc (2,411,569 samples, 0.05%)</title><rect x="56.8" y="421" width="0.5" height="15.0" fill="rgb(219,68,16)" rx="2" ry="2" />
+<text  x="59.78" y="431.5" ></text>
 </g>
 <g >
-<title>perf_event_mmap_event (2,482,575 samples, 0.03%)</title><rect x="10.0" y="133" width="0.4" height="15.0" fill="rgb(238,154,36)" rx="2" ry="2" />
-<text  x="13.00" y="143.5" ></text>
+<title>alloc_pages_mpol (5,079,270 samples, 0.10%)</title><rect x="693.9" y="117" width="1.2" height="15.0" fill="rgb(254,227,54)" rx="2" ry="2" />
+<text  x="696.88" y="127.5" ></text>
 </g>
 <g >
-<title>__pi_clear_page (9,869,676 samples, 0.13%)</title><rect x="21.0" y="101" width="1.5" height="15.0" fill="rgb(236,144,34)" rx="2" ry="2" />
-<text  x="24.01" y="111.5" ></text>
+<title>folio_batch_move_lru (2,544,564 samples, 0.05%)</title><rect x="32.0" y="181" width="0.6" height="15.0" fill="rgb(207,10,2)" rx="2" ry="2" />
+<text  x="35.05" y="191.5" ></text>
 </g>
 <g >
-<title>__free (5,081,845 samples, 0.07%)</title><rect x="98.1" y="373" width="0.7" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
-<text  x="101.07" y="383.5" ></text>
+<title>folio_alloc_mpol_noprof (5,079,270 samples, 0.10%)</title><rect x="693.9" y="133" width="1.2" height="15.0" fill="rgb(219,64,15)" rx="2" ry="2" />
+<text  x="696.88" y="143.5" ></text>
 </g>
 <g >
-<title>mod_memcg_lruvec_state (2,536,934 samples, 0.03%)</title><rect x="25.2" y="149" width="0.4" height="15.0" fill="rgb(224,91,21)" rx="2" ry="2" />
-<text  x="28.19" y="159.5" ></text>
+<title>__alloc_frozen_pages_noprof (34,803,527 samples, 0.69%)</title><rect x="23.3" y="149" width="8.2" height="15.0" fill="rgb(228,109,26)" rx="2" ry="2" />
+<text  x="26.33" y="159.5" ></text>
 </g>
 <g >
-<title>el0_svc_common.constprop.0 (5,023,823 samples, 0.06%)</title><rect x="10.0" y="229" width="0.8" height="15.0" fill="rgb(224,89,21)" rx="2" ry="2" />
-<text  x="13.00" y="239.5" ></text>
+<title>std::__detail::_Map_base&lt;unsigned long, std::pair&lt;unsigned long const, Order&gt;, std::allocator&lt;std::pair&lt;unsigned long const, Order&gt; &gt;, std::__detail::_Select1st, std::equal_to&lt;unsigned long&gt;, std::hash&lt;unsigned long&gt;, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits&lt;false, false, true&gt;, true&gt;::operator[] (2,478,661 samples, 0.05%)</title><rect x="1189.4" y="485" width="0.6" height="15.0" fill="rgb(206,8,2)" rx="2" ry="2" />
+<text  x="1192.42" y="495.5" ></text>
 </g>
 <g >
-<title>__free (5,098,901 samples, 0.07%)</title><rect x="1158.9" y="373" width="0.7" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
-<text  x="1161.86" y="383.5" ></text>
+<title>NasdqBook::~NasdqBook (7,636,148 samples, 0.15%)</title><rect x="118.6" y="453" width="1.8" height="15.0" fill="rgb(248,199,47)" rx="2" ry="2" />
+<text  x="121.65" y="463.5" ></text>
 </g>
 <g >
-<title>[unknown] (247,102,956 samples, 3.18%)</title><rect x="10.0" y="421" width="37.5" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="13.00" y="431.5" >[un..</text>
+<title>alloc_anon_folio (7,534,638 samples, 0.15%)</title><rect x="693.3" y="181" width="1.8" height="15.0" fill="rgb(223,86,20)" rx="2" ry="2" />
+<text  x="696.31" y="191.5" ></text>
 </g>
 <g >
-<title>[unknown] (7,641,212 samples, 0.10%)</title><rect x="1188.1" y="437" width="1.1" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1191.07" y="447.5" ></text>
+<title>[unknown] (7,636,148 samples, 0.15%)</title><rect x="118.6" y="437" width="1.8" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="121.65" y="447.5" ></text>
 </g>
 <g >
-<title>do_anonymous_page (39,989,455 samples, 0.51%)</title><rect x="19.5" y="213" width="6.1" height="15.0" fill="rgb(238,155,37)" rx="2" ry="2" />
-<text  x="22.51" y="223.5" ></text>
+<title>el0_da (7,534,638 samples, 0.15%)</title><rect x="693.3" y="309" width="1.8" height="15.0" fill="rgb(217,55,13)" rx="2" ry="2" />
+<text  x="696.31" y="319.5" ></text>
 </g>
 <g >
-<title>__folio_mod_stat (5,077,980 samples, 0.07%)</title><rect x="24.8" y="181" width="0.8" height="15.0" fill="rgb(254,227,54)" rx="2" ry="2" />
-<text  x="27.80" y="191.5" ></text>
+<title>[unknown] (99,537,821 samples, 1.97%)</title><rect x="62.1" y="405" width="23.2" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="65.06" y="415.5" >[..</text>
 </g>
 <g >
-<title>operator new@plt (2,555,074 samples, 0.03%)</title><rect x="1168.5" y="405" width="0.4" height="15.0" fill="rgb(232,125,29)" rx="2" ry="2" />
-<text  x="1171.52" y="415.5" ></text>
+<title>_int_free (10,198,604 samples, 0.20%)</title><rect x="1185.9" y="421" width="2.3" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="1188.85" y="431.5" ></text>
 </g>
 <g >
-<title>[unknown] (7,641,212 samples, 0.10%)</title><rect x="1188.1" y="405" width="1.1" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1191.07" y="415.5" ></text>
+<title>_int_free (20,364,412 samples, 0.40%)</title><rect x="1140.0" y="389" width="4.8" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
+<text  x="1143.04" y="399.5" ></text>
 </g>
 <g >
-<title>folios_put_refs (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="133" width="0.4" height="15.0" fill="rgb(254,229,54)" rx="2" ry="2" />
-<text  x="1190.65" y="143.5" ></text>
+<title>free@plt (2,550,894 samples, 0.05%)</title><rect x="57.3" y="469" width="0.6" height="15.0" fill="rgb(229,112,26)" rx="2" ry="2" />
+<text  x="60.34" y="479.5" ></text>
 </g>
 <g >
-<title>vma_alloc_folio_noprof (19,977,891 samples, 0.26%)</title><rect x="20.6" y="165" width="3.1" height="15.0" fill="rgb(218,61,14)" rx="2" ry="2" />
-<text  x="23.63" y="175.5" ></text>
+<title>__free (5,103,100 samples, 0.10%)</title><rect x="1121.5" y="373" width="1.2" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
+<text  x="1124.53" y="383.5" ></text>
 </g>
 <g >
-<title>el0t_64_sync_handler (12,442,617 samples, 0.16%)</title><rect x="754.8" y="293" width="1.9" height="15.0" fill="rgb(211,32,7)" rx="2" ry="2" />
-<text  x="757.83" y="303.5" ></text>
+<title>__rmqueue_pcplist (12,647,778 samples, 0.25%)</title><rect x="28.5" y="101" width="3.0" height="15.0" fill="rgb(230,118,28)" rx="2" ry="2" />
+<text  x="31.50" y="111.5" ></text>
 </g>
 <g >
-<title>__lruvec_stat_mod_folio (5,077,980 samples, 0.07%)</title><rect x="24.8" y="165" width="0.8" height="15.0" fill="rgb(246,191,45)" rx="2" ry="2" />
-<text  x="27.80" y="175.5" ></text>
+<title>std::_Rb_tree_decrement (165,578,483 samples, 3.28%)</title><rect x="771.2" y="389" width="38.7" height="15.0" fill="rgb(238,152,36)" rx="2" ry="2" />
+<text  x="774.22" y="399.5" >std..</text>
 </g>
 <g >
-<title>[unknown] (7,358,655,976 samples, 94.58%)</title><rect x="52.9" y="437" width="1116.0" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="55.90" y="447.5" >[unknown]</text>
+<title>NasdaqBookParser&lt;NasdqBook&gt;::add (2,419,682,028 samples, 47.87%)</title><rect x="130.8" y="405" width="564.9" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
+<text  x="133.84" y="415.5" >NasdaqBookParser&lt;NasdqBook&gt;::add</text>
 </g>
 <g >
-<title>__brk (5,023,823 samples, 0.06%)</title><rect x="10.0" y="309" width="0.8" height="15.0" fill="rgb(225,94,22)" rx="2" ry="2" />
-<text  x="13.00" y="319.5" ></text>
+<title>__mem_cgroup_charge (2,455,368 samples, 0.05%)</title><rect x="693.3" y="165" width="0.6" height="15.0" fill="rgb(218,60,14)" rx="2" ry="2" />
+<text  x="696.31" y="175.5" ></text>
 </g>
 <g >
-<title>__GI___libc_malloc (81,090,402 samples, 1.04%)</title><rect x="26.0" y="389" width="12.3" height="15.0" fill="rgb(219,68,16)" rx="2" ry="2" />
-<text  x="28.96" y="399.5" ></text>
+<title>__free (7,638,878 samples, 0.15%)</title><rect x="1144.8" y="405" width="1.8" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
+<text  x="1147.79" y="415.5" ></text>
 </g>
 <g >
-<title>folio_add_lru (7,532,684 samples, 0.10%)</title><rect x="23.7" y="181" width="1.1" height="15.0" fill="rgb(208,17,4)" rx="2" ry="2" />
-<text  x="26.66" y="191.5" ></text>
+<title>__mem_cgroup_charge (2,381,652 samples, 0.05%)</title><rect x="22.8" y="213" width="0.5" height="15.0" fill="rgb(218,60,14)" rx="2" ry="2" />
+<text  x="25.78" y="223.5" ></text>
 </g>
 <g >
-<title>alloc_anon_folio (2,383,512 samples, 0.03%)</title><rect x="10.8" y="181" width="0.3" height="15.0" fill="rgb(223,86,20)" rx="2" ry="2" />
-<text  x="13.76" y="191.5" ></text>
+<title>main (40,773,743 samples, 0.81%)</title><rect x="1140.0" y="453" width="9.6" height="15.0" fill="rgb(243,179,42)" rx="2" ry="2" />
+<text  x="1143.04" y="463.5" ></text>
 </g>
 <g >
-<title>[unknown] (1,095,704 samples, 0.01%)</title><rect x="1168.9" y="373" width="0.2" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1171.91" y="383.5" ></text>
+<title>[unknown] (1,201,612 samples, 0.02%)</title><rect x="120.4" y="389" width="0.3" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
+<text  x="123.43" y="399.5" ></text>
 </g>
 <g >
-<title>NasdqBook::~NasdqBook (12,711,129 samples, 0.16%)</title><rect x="96.9" y="421" width="1.9" height="15.0" fill="rgb(248,199,47)" rx="2" ry="2" />
-<text  x="99.91" y="431.5" ></text>
+<title>std::_Rb_tree&lt;long, std::pair&lt;long const, Level&gt;, std::_Select1st&lt;std::pair&lt;long const, Level&gt; &gt;, std::less&lt;long&gt;, std::allocator&lt;std::pair&lt;long const, Level&gt; &gt; &gt;::_M_erase (15,298,085 samples, 0.30%)</title><rect x="1185.9" y="485" width="3.5" height="15.0" fill="rgb(253,224,53)" rx="2" ry="2" />
+<text  x="1188.85" y="495.5" ></text>
 </g>
 <g >
-<title>[unknown] (7,359,751,680 samples, 94.59%)</title><rect x="52.9" y="453" width="1116.2" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="55.90" y="463.5" >[unknown]</text>
+<title>__free (5,089,334 samples, 0.10%)</title><rect x="52.6" y="437" width="1.2" height="15.0" fill="rgb(235,142,34)" rx="2" ry="2" />
+<text  x="55.61" y="447.5" ></text>
 </g>
 <g >
-<title>do_page_fault (44,976,898 samples, 0.58%)</title><rect x="18.8" y="277" width="6.8" height="15.0" fill="rgb(216,54,13)" rx="2" ry="2" />
-<text  x="21.75" y="287.5" ></text>
-</g>
-<g >
-<title>all (7,780,587,461 samples, 100%)</title><rect x="10.0" y="485" width="1180.0" height="15.0" fill="rgb(213,39,9)" rx="2" ry="2" />
-<text  x="13.00" y="495.5" ></text>
-</g>
-<g >
-<title>std::_Rb_tree&lt;long, std::pair&lt;long const, Level&gt;, std::_Select1st&lt;std::pair&lt;long const, Level&gt; &gt;, std::less&lt;long&gt;, std::allocator&lt;std::pair&lt;long const, Level&gt; &gt; &gt;::_M_erase (7,641,212 samples, 0.10%)</title><rect x="1188.1" y="453" width="1.1" height="15.0" fill="rgb(253,224,53)" rx="2" ry="2" />
-<text  x="1191.07" y="463.5" ></text>
-</g>
-<g >
-<title>__handle_mm_fault (2,383,512 samples, 0.03%)</title><rect x="10.8" y="229" width="0.3" height="15.0" fill="rgb(207,9,2)" rx="2" ry="2" />
-<text  x="13.76" y="239.5" ></text>
-</g>
-<g >
-<title>folio_add_lru (2,412,449 samples, 0.03%)</title><rect x="756.0" y="133" width="0.3" height="15.0" fill="rgb(208,17,4)" rx="2" ry="2" />
-<text  x="758.97" y="143.5" ></text>
-</g>
-<g >
-<title>__folio_batch_add_and_move (7,532,684 samples, 0.10%)</title><rect x="23.7" y="165" width="1.1" height="15.0" fill="rgb(254,227,54)" rx="2" ry="2" />
-<text  x="26.66" y="175.5" ></text>
-</g>
-<g >
-<title>__css_rstat_updated (2,536,934 samples, 0.03%)</title><rect x="25.2" y="133" width="0.4" height="15.0" fill="rgb(229,111,26)" rx="2" ry="2" />
-<text  x="28.19" y="143.5" ></text>
-</g>
-<g >
-<title>dl_main (1,095,704 samples, 0.01%)</title><rect x="1168.9" y="437" width="0.2" height="15.0" fill="rgb(236,145,34)" rx="2" ry="2" />
-<text  x="1171.91" y="447.5" ></text>
-</g>
-<g >
-<title>__libc_start_call_main (6,997,112,828 samples, 89.93%)</title><rect x="98.8" y="405" width="1061.2" height="15.0" fill="rgb(210,26,6)" rx="2" ry="2" />
-<text  x="101.84" y="415.5" >__libc_start_call_main</text>
-</g>
-<g >
-<title>[unknown] (20,338,089 samples, 0.26%)</title><rect x="1160.0" y="373" width="3.1" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1163.02" y="383.5" ></text>
-</g>
-<g >
-<title>[unknown] (125,036,687 samples, 1.61%)</title><rect x="1169.1" y="421" width="18.9" height="15.0" fill="rgb(210,24,5)" rx="2" ry="2" />
-<text  x="1172.07" y="431.5" ></text>
-</g>
-<g >
-<title>__GI___libc_malloc (111,753,546 samples, 1.44%)</title><rect x="54.1" y="357" width="16.9" height="15.0" fill="rgb(219,68,16)" rx="2" ry="2" />
-<text  x="57.06" y="367.5" ></text>
-</g>
-<g >
-<title>__pte_offset_map_lock (7,400,900 samples, 0.10%)</title><rect x="19.5" y="197" width="1.1" height="15.0" fill="rgb(240,163,39)" rx="2" ry="2" />
-<text  x="22.51" y="207.5" ></text>
-</g>
-<g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::erase_order (226,421,560 samples, 2.91%)</title><rect x="488.4" y="357" width="34.3" height="15.0" fill="rgb(223,83,19)" rx="2" ry="2" />
-<text  x="491.35" y="367.5" >Na..</text>
-</g>
-<g >
-<title>do_page_fault (2,383,512 samples, 0.03%)</title><rect x="10.8" y="261" width="0.3" height="15.0" fill="rgb(216,54,13)" rx="2" ry="2" />
-<text  x="13.76" y="271.5" ></text>
-</g>
-<g >
-<title>folio_batch_move_lru (2,412,449 samples, 0.03%)</title><rect x="756.0" y="101" width="0.3" height="15.0" fill="rgb(207,10,2)" rx="2" ry="2" />
-<text  x="758.97" y="111.5" ></text>
-</g>
-<g >
-<title>std::vector&lt;LevelRow, std::allocator&lt;LevelRow&gt; &gt;::reserve (38,151,174 samples, 0.49%)</title><rect x="833.7" y="357" width="5.8" height="15.0" fill="rgb(222,79,19)" rx="2" ry="2" />
-<text  x="836.72" y="367.5" ></text>
-</g>
-<g >
-<title>std::_Rb_tree_rebalance_for_erase (15,259,080 samples, 0.20%)</title><rect x="520.4" y="341" width="2.3" height="15.0" fill="rgb(205,2,0)" rx="2" ry="2" />
-<text  x="523.38" y="351.5" ></text>
-</g>
-<g >
-<title>std::_Rb_tree&lt;long, std::pair&lt;long const, Level&gt;, std::_Select1st&lt;std::pair&lt;long const, Level&gt; &gt;, std::less&lt;long&gt;, std::allocator&lt;std::pair&lt;long const, Level&gt; &gt; &gt;::_M_emplace_hint_unique&lt;std::piecewise_construct_t const&amp;, std::tuple&lt;long const&amp;&gt;, std::tuple&lt;&gt; &gt; (2,555,074 samples, 0.03%)</title><rect x="1168.5" y="421" width="0.4" height="15.0" fill="rgb(205,0,0)" rx="2" ry="2" />
-<text  x="1171.52" y="431.5" ></text>
-</g>
-<g >
-<title>free@plt (5,109,194 samples, 0.07%)</title><rect x="47.5" y="437" width="0.8" height="15.0" fill="rgb(229,112,26)" rx="2" ry="2" />
-<text  x="50.48" y="447.5" ></text>
-</g>
-<g >
-<title>do_el0_svc (5,023,823 samples, 0.06%)</title><rect x="10.0" y="245" width="0.8" height="15.0" fill="rgb(218,60,14)" rx="2" ry="2" />
-<text  x="13.00" y="255.5" ></text>
-</g>
-<g >
-<title>vma_alloc_zeroed_movable_folio (5,083,466 samples, 0.07%)</title><rect x="755.2" y="133" width="0.8" height="15.0" fill="rgb(232,126,30)" rx="2" ry="2" />
-<text  x="758.20" y="143.5" ></text>
-</g>
-<g >
-<title>std::_Rb_tree&lt;long, std::pair&lt;long const, Level&gt;, std::_Select1st&lt;std::pair&lt;long const, Level&gt; &gt;, std::less&lt;long&gt;, std::allocator&lt;std::pair&lt;long const, Level&gt; &gt; &gt;::_M_erase (5,103,341 samples, 0.07%)</title><rect x="1158.1" y="341" width="0.8" height="15.0" fill="rgb(253,224,53)" rx="2" ry="2" />
-<text  x="1161.09" y="351.5" ></text>
-</g>
-<g >
-<title>rmqueue_bulk (5,086,573 samples, 0.07%)</title><rect x="22.9" y="53" width="0.8" height="15.0" fill="rgb(235,138,33)" rx="2" ry="2" />
-<text  x="25.89" y="63.5" ></text>
-</g>
-<g >
-<title>do_vmi_align_munmap (2,545,596 samples, 0.03%)</title><rect x="1187.6" y="229" width="0.4" height="15.0" fill="rgb(211,29,7)" rx="2" ry="2" />
-<text  x="1190.65" y="239.5" ></text>
-</g>
-<g >
-<title>rmqueue.constprop.0 (7,568,999 samples, 0.10%)</title><rect x="22.5" y="85" width="1.2" height="15.0" fill="rgb(212,33,7)" rx="2" ry="2" />
-<text  x="25.51" y="95.5" ></text>
-</g>
-<g >
-<title>_int_free (2,546,638 samples, 0.03%)</title><rect x="44.4" y="389" width="0.4" height="15.0" fill="rgb(247,196,46)" rx="2" ry="2" />
-<text  x="47.43" y="399.5" ></text>
-</g>
-<g >
-<title>std::_Rb_tree_decrement@plt (27,860,911 samples, 0.36%)</title><rect x="72.2" y="405" width="4.2" height="15.0" fill="rgb(254,226,54)" rx="2" ry="2" />
-<text  x="75.17" y="415.5" ></text>
-</g>
-<g >
-<title>el0_da (2,383,512 samples, 0.03%)</title><rect x="10.8" y="309" width="0.3" height="15.0" fill="rgb(217,55,13)" rx="2" ry="2" />
-<text  x="13.76" y="319.5" ></text>
-</g>
-<g >
-<title>NasdaqBookParser&lt;NasdqBook&gt;::add (7,682,397 samples, 0.10%)</title><rect x="52.9" y="421" width="1.2" height="15.0" fill="rgb(217,56,13)" rx="2" ry="2" />
-<text  x="55.90" y="431.5" ></text>
+<title>std::_Rb_tree_rebalance_for_erase (28,010,361 samples, 0.55%)</title><rect x="644.4" y="373" width="6.5" height="15.0" fill="rgb(205,2,0)" rx="2" ry="2" />
+<text  x="647.35" y="383.5" ></text>
 </g>
 </g>
 </svg>

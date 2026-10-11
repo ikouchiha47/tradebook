@@ -104,25 +104,11 @@ void NasdaqBookParser<Book>::erase_order(const Order& o) {
 
 template <class Book>
 void NasdaqBookParser<Book>::refresh() {
-  const int64_t bp = book_.best_bid();
-  if (bp != 0) {
-    Level* l = book_.find_level(bp, 'B');
-    book_.cached.bid_px = bp;
-    book_.cached.bid_sz = l ? l->total : 0;
-  } else {
-    book_.cached.bid_px = 0;
-    book_.cached.bid_sz = 0;
-  }
-
-  const int64_t ap = book_.best_ask();
-  if (ap != 0) {
-    Level* l = book_.find_level(ap, 'S');
-    book_.cached.ask_px = ap;
-    book_.cached.ask_sz = l ? l->total : 0;
-  } else {
-    book_.cached.ask_px = 0;
-    book_.cached.ask_sz = 0;
-  }
+  // Best price AND size are cached in the book (maintained incrementally) — no lookup here.
+  book_.cached.bid_px = book_.best_bid();
+  book_.cached.bid_sz = book_.best_bid_sz();
+  book_.cached.ask_px = book_.best_ask();
+  book_.cached.ask_sz = book_.best_ask_sz();
 
   if (book_.cached.bid_px != 0 && book_.cached.ask_px != 0 &&
       book_.cached.bid_px >= book_.cached.ask_px) {

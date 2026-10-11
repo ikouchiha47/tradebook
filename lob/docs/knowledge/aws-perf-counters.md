@@ -106,7 +106,9 @@ snapshot (`depth`). **New finding the flamegraph surfaced:** `refresh()` — the
 top-of-book *size* lookup (`find_level(best_px, side)`) — is ~27% of the map's CPU and ~9%
 of the ladder's. Our cached-best change cached the *price*; `refresh` still resolves the
 *size* every message, and that's a tree walk for the map vs index math for the ladder.
-Candidate next optimization; noted, not yet done.
+**Done** — cached the best level's size alongside its price (`where-to-look.md` §6):
+N=1M add/remove map 223 → 163 ns (−27%), ladder 30 → 26 ns (−15%); real-feed output
+unchanged end-to-end (the win sits inside the 15% route stage).
 
 ## Reproduce
 
