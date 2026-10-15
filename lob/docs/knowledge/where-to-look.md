@@ -262,6 +262,40 @@ three steps at some tier. See `bit-manipulation.md` for the full primitive set.
   touches ~3 bitmap words + one level, while the map touches ~log N missing nodes.
 - Ship when the *shape* is better even if the macro number is unmoved — and say so.
 
+## Profiling the real replay (gzip removed)
+
+The flamegraphs above were on the synthetic probe. To profile the *actual* replay we took
+gzip out of the way: `--decompress` writes a raw framed `.bin` (8.66 GB), `--raw` replays it
+with no zlib.
+
+```
+replay, 282M msgs        gzip        raw: 2 fread/msg     raw: 1 MiB blocks
+throughput               11.16M/s    15.61M/s             44.08M/s
+elapsed                  25.3s       18.08s               6.40s
+```
+
+`--stages` on the raw run said **read 74% / route 26%**. Whether that "read" was disk or CPU:
+```
+cat $BIN >/dev/null   →   8.66 GB in 3.3 s   →   pure I/O is ~3 s of ~18 s
+⇒ the ~13 s "read" is framing CPU, not disk
+```
+(The symbolized `sample`, `-g -fno-omit-frame-pointer`, put `feed.next` at ~1% with the time
+in the inlined loop — the sampler cannot attribute inlined `fread`, so here the wall-clock
+split was the trustworthy signal. When the two disagree, the pure-I/O baseline settles it.)
+
+The raw path did **2 `fread` per message** (~564 M stdio calls); the gz path's `gzread` is
+already buffered inside zlib, which is why only the raw path regressed. Fix: a 1 MiB block
+reader (`FeedReader::ensure` → ~1 `fread` per MiB).
+
+```
+raw FULL   18.08s → 6.40s   (2.8×)
+vs gzip    11.16M → 44.08M msgs/s   (~4×)
+```
+
+Rule: after removing one dominant cost, re-run the split — the new bottleneck is often the
+*framing* that was hidden under it. And a stage's wall time against a `cat` baseline tells
+CPU from disk.
+
 ## Evidence index
 ```
 numbers      docs/benchmarks/{PERFORMANCE,tick-ladder-vs-map,tick-ladder-sweep}.md

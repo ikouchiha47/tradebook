@@ -33,12 +33,14 @@ struct Options {
   int64_t ladder_base = 0;      // raw ticks (dollars x 10000)
   int64_t ladder_inc = 100;     // 100 raw ticks = 1 cent per slot
   size_t ladder_slots = 200000; // covers [base, base + slots*inc) = $0 .. $2000
+  bool raw = false;             // read a pre-decompressed .bin (no zlib)
+  std::string decompress;       // if set: gunzip o.path -> this file, then exit
 };
 }  // namespace
 
 template <class Book>
 static int run_replay(const Options& o, Book book) {
-  FeedReader feed(o.path);
+  FeedReader feed(o.path, o.raw);
   if (!feed.open_ok()) {
     std::fprintf(stderr, "FAIL: cannot open %s\n", o.path.c_str());
     return 1;
@@ -241,10 +243,21 @@ int main(int argc, char** argv) {
     else if (a == "--stats-every" && i + 1 < argc) o.stats_every = std::stoull(argv[++i]);
     else if (a == "--latency") o.latency = true;
     else if (a == "--stages") o.stages = true;
+    else if (a == "--raw") o.raw = true;
+    else if (a == "--decompress" && i + 1 < argc) o.decompress = argv[++i];
     else if (a == "--book" && i + 1 < argc) o.book = argv[++i];
     else if (a == "--ladder-base" && i + 1 < argc) o.ladder_base = std::stoll(argv[++i]);
     else if (a == "--ladder-inc" && i + 1 < argc) o.ladder_inc = std::stoll(argv[++i]);
     else if (a == "--ladder-slots" && i + 1 < argc) o.ladder_slots = std::stoull(argv[++i]);
+  }
+
+  if (!o.decompress.empty()) {
+    if (!gunzip_to_file(o.path, o.decompress)) {
+      std::fprintf(stderr, "FAIL: decompress %s -> %s\n", o.path.c_str(), o.decompress.c_str());
+      return 1;
+    }
+    std::printf("decompressed %s -> %s\n", o.path.c_str(), o.decompress.c_str());
+    return 0;
   }
 
   if (o.book == "ladder") {
