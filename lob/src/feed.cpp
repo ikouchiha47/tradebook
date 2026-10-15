@@ -74,9 +74,11 @@ template <class Source>
 bool LinearBuf<Source>::refill(size_t need) {
   if (avail_ && pos_) std::memmove(buf_.data(), buf_.data() + pos_, avail_);
   pos_ = 0;  // always reset: with avail_==0 the memmove is skipped, pos_ would stay stale
+
   if (buf_.size() < need) buf_.resize(need);
   while (avail_ < need) {
     size_t got = src_.read(buf_.data() + avail_, buf_.size() - avail_);
+
     if (got == 0) { eof_ = true; return avail_ >= need; }
     avail_ += got;
   }
