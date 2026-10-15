@@ -1,102 +1,126 @@
 #include "feed.h"
-#include <cstdio>
 #include <cstring>
 #include <zlib.h>
 
-FeedReader::FeedReader(const std::string& path, bool raw) : raw_(raw) {
-  if (raw) {
-    handle_ = static_cast<void*>(std::fopen(path.c_str(), "rb"));
-    buf_.resize(1u << 20);  // 1 MiB block: ~1 fread per MiB, not 2 per message
-  } else {
-    handle_ = static_cast<void*>(gzopen(path.c_str(), "rb"));
-  }
+// ---------------------------------------------------------------------------
+// GZSource / RawSource
+// ---------------------------------------------------------------------------
+GZSource::GZSource(const std::string& path) { gz_ = gzopen(path.c_str(), "rb"); }
+
+GZSource::~GZSource() {
+  if (gz_) gzclose(static_cast<gzFile>(gz_));
 }
 
-FeedReader::~FeedReader() {
-  if (!handle_) return;
-  if (raw_) std::fclose(static_cast<FILE*>(handle_));
-  else      gzclose(static_cast<gzFile>(handle_));
+size_t GZSource::read(uint8_t* dst, size_t n) {
+  int r = gzread(static_cast<gzFile>(gz_), dst, static_cast<unsigned>(n));
+  return r > 0 ? static_cast<size_t>(r) : 0;
 }
 
-// Collect exactly n bytes from a gz stream; one gzread may return short.
-static bool read_exact_gz(gzFile gz, uint8_t* dst, int n) {
-  int got = 0;
-  while (got < n) {
-    int r = gzread(gz, dst + got, n - got);
-    if (r <= 0) return false;
-    got += r;
+RawSource::RawSource(const std::string& path) : in_(path, std::ios::binary) {}
+
+size_t RawSource::read(uint8_t* dst, size_t n) {
+  in_.read(reinterpret_cast<char*>(dst), static_cast<std::streamsize>(n));
+  return static_cast<size_t>(in_.gcount());
+}
+
+#if 0  // BlockBuf disabled — LinearBuf is the one we keep
+// ---------------------------------------------------------------------------
+// BlockBuf<Source>  (std::streambuf)
+// ---------------------------------------------------------------------------
+template <class Source>
+BlockBuf<Source>::BlockBuf(const std::string& path) : src_(path), buf_(kBlock) {
+  char* base = reinterpret_cast<char*>(buf_.data());
+  setg(base, base, base);
+}
+
+template <class Source>
+bool BlockBuf<Source>::refill(size_t need) {
+  size_t have = size();
+  char* base = reinterpret_cast<char*>(buf_.data());
+  if (have && gptr() != base) std::memmove(base, gptr(), have);  // compact leftover
+  setg(base, base, base + have);
+  if (buf_.size() < need) buf_.resize(need);
+  while (have < need) {
+    size_t got = src_.read(buf_.data() + have, buf_.size() - have);
+    if (got == 0) { eof_ = true; return have >= need; }
+    have += got;
+    setg(base, base, base + have);
   }
   return true;
 }
 
-// raw path: guarantee >= n bytes are available at buf_[pos_], refilling in blocks.
-bool FeedReader::ensure(size_t n) {
-  if (avail_ >= n) return true;
-  if (buf_.size() < n) buf_.resize(n);
-  if (avail_ && pos_) std::memmove(buf_.data(), buf_.data() + pos_, avail_);  // compact
-  pos_ = 0;
-  while (avail_ < n) {
-    size_t got = std::fread(buf_.data() + avail_, 1, buf_.size() - avail_,
-                            static_cast<FILE*>(handle_));
-    if (got == 0) return false;  // EOF / error
+template <class Source>
+bool BlockBuf<Source>::want(size_t n) {
+  if (size() >= n) return true;
+  refill(n);
+  return size() >= n;
+}
+
+template <class Source>
+std::streambuf::int_type BlockBuf<Source>::underflow() {
+  if (gptr() < egptr()) return std::streambuf::traits_type::to_int_type(*gptr());
+  if (!refill(1)) return std::streambuf::traits_type::eof();
+  return std::streambuf::traits_type::to_int_type(*gptr());
+}
+#endif
+
+// ---------------------------------------------------------------------------
+// LinearBuf<Source>  (plain block + integer cursor)
+// ---------------------------------------------------------------------------
+template <class Source>
+LinearBuf<Source>::LinearBuf(const std::string& path) : src_(path), buf_(kBlock) {}
+
+template <class Source>
+bool LinearBuf<Source>::refill(size_t need) {
+  if (avail_ && pos_) std::memmove(buf_.data(), buf_.data() + pos_, avail_);
+  pos_ = 0;  // always reset: with avail_==0 the memmove is skipped, pos_ would stay stale
+  if (buf_.size() < need) buf_.resize(need);
+  while (avail_ < need) {
+    size_t got = src_.read(buf_.data() + avail_, buf_.size() - avail_);
+    if (got == 0) { eof_ = true; return avail_ >= need; }
     avail_ += got;
   }
   return true;
 }
 
-bool FeedReader::next(NasdaqRawMsg& out) {
-  if (!handle_) return false;
+template <class Source>
+bool LinearBuf<Source>::want(size_t n) {
+  if (avail_ >= n) return true;
+  refill(n);
+  return avail_ >= n;
+}
 
-  if (raw_) {
-    if (!ensure(2)) return false;
-    uint16_t len = be16(buf_.data() + pos_);
-    if (len == 0) { pos_ += 2; avail_ -= 2; return next(out); }  // padding
-    if (!ensure(static_cast<size_t>(len) + 2)) return false;     // compaction may move
-    len = be16(buf_.data() + pos_);
-    if (out.payload.size() < len) out.payload.resize(len);
-    std::memcpy(out.payload.data(), buf_.data() + pos_ + 2, len);
-    pos_ += static_cast<size_t>(len) + 2;
-    avail_ -= static_cast<size_t>(len) + 2;
+// ---------------------------------------------------------------------------
+// FeedReader<Buf> — framing only
+// ---------------------------------------------------------------------------
+template <class Buf>
+bool FeedReader<Buf>::next(NasdaqRawMsg& out) {
+  if (!buf_.want(2)) return false;  // EOF: nothing more to frame
 
-    out.len = len;
-    out.type = char(out.payload[0]);
-    out.locate = (len >= 3) ? be16(out.payload.data() + 1) : 0;
-    ++n_;
-    return true;
-  }
+  uint16_t len = be16(buf_.data());
+  if (len == 0) { buf_.consume(2); return next(out); }  // padding record: skip
+  if (!buf_.want(static_cast<size_t>(len) + 2)) return false;  // truncated tail
 
-  uint8_t hdr[2];  // stack: length prefix, no heap
-  if (!read_exact_gz(static_cast<gzFile>(handle_), hdr, 2)) return false;
-  uint16_t len = be16(hdr);
-  if (len == 0) return next(out);  // padding record: skip
-  if (out.payload.size() < len) out.payload.resize(len);
-  if (!read_exact_gz(static_cast<gzFile>(handle_), out.payload.data(), len)) return false;
+  len = be16(buf_.data());                                     // re-read (may have moved)
+
+  if (out.payload.size() < len) out.payload.resize(len);  // grow only if bigger
+
+  std::memcpy(out.payload.data(), buf_.data() + 2, len);
+  buf_.consume(static_cast<size_t>(len) + 2);
 
   out.len = len;
-  out.type = (len > 0) ? char(out.payload[0]) : 0;
+  out.type = char(out.payload[0]);
   out.locate = (len >= 3) ? be16(out.payload.data() + 1) : 0;
   ++n_;
+
   return true;
 }
 
-bool gunzip_to_file(const std::string& gz_path, const std::string& out_path) {
-  gzFile gz = gzopen(gz_path.c_str(), "rb");
-  if (!gz) return false;
-  FILE* fp = std::fopen(out_path.c_str(), "wb");
-  if (!fp) { gzclose(gz); return false; }
-
-  std::vector<uint8_t> buf(1 << 20);
-  int r = 0;
-  bool ok = true;
-  while ((r = gzread(gz, buf.data(), static_cast<unsigned>(buf.size()))) > 0) {
-    if (std::fwrite(buf.data(), 1, static_cast<size_t>(r), fp) != static_cast<size_t>(r)) {
-      ok = false;
-      break;
-    }
-  }
-  if (r < 0) ok = false;
-
-  std::fclose(fp);
-  gzclose(gz);
-  return ok;
-}
+// template class BlockBuf<GZSource>;
+// template class BlockBuf<RawSource>;
+template class LinearBuf<GZSource>;
+template class LinearBuf<RawSource>;
+// template class FeedReader<BlockBuf<GZSource>>;
+// template class FeedReader<BlockBuf<RawSource>>;
+template class FeedReader<LinearBuf<GZSource>>;
+template class FeedReader<LinearBuf<RawSource>>;
